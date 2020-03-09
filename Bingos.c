@@ -1,0 +1,47 @@
+#include"Bingo_Header.h"
+int bingos(int bingo[5][5],int i,int j)
+{
+    int x,bing=0,flag=1;
+    for(x=0;x<5;++x)
+	if(bingo[x][j]!=0)
+	{
+	    flag=0;
+	    break;
+	}
+    if(flag==1)
+	++bing;
+    flag=1;
+    for(x=0;x<5;++x)
+	if(bingo[i][x]!=0)
+	{
+	    flag=0;
+	    break;
+	}
+    if(flag==1)
+	++bing;
+    flag=1;
+    if(i==j)
+    {
+	for(x=0;x<5;++x)
+	    if(bingo[x][x]!=0)
+	    {
+		flag=0;
+		break;
+	    }
+	if(flag==1)
+	    ++bing;
+	flag=1;
+    }
+    if(i+j==4)
+    {
+	for(x=0;x<5;++x)
+	    if(bingo[x][4-x]!=0)
+	    {
+		flag=0;
+		break;
+	    }
+	if(flag==1)
+	    ++bing;
+    }
+    return bing;
+}

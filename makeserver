@@ -1,0 +1,10 @@
+ser : old_server.o cdll.o Fill_Bingo.o
+	gcc -o ser $^
+old_server.o : old_server.c Bingo_Header.h
+	gcc -c $<
+cdll.o: cdll.c Bingo_Header.h
+	$(cc) $(cflags) $< 
+Fill_Bingo.o: Fill_Bingo.c Bingo_Header.h
+	$(cc) $(cflags) $< $(lflags)
+clean :
+	rm -f old_server.o cdll.o Fill_Bingo.o ser

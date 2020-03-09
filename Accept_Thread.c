@@ -20,6 +20,7 @@ void* accept_t(void* arg)
 {
     playerlist *pl=arg;
     player p;
+    conf_p conf;
     conf.w = newwin(15,45,10,40);
     conf.cancel = derwin(conf.w,3,10,12,35);
     conf.start = derwin(conf.w,3,9,12,0);
@@ -33,7 +34,6 @@ void* accept_t(void* arg)
     int status;
     init(&pl->l,sizeof(player),cmp,NULL,cpy);
     node* t=pl->l.h;
-	conf_p conf;
 	conf.lock=&pl->lock;
     fill_bingo(((player*)t->d)->array);
     ((player*)t->d)->bngcnt=0;
@@ -63,12 +63,12 @@ void* accept_t(void* arg)
 	pthread_mutex_unlock(&pl->lock);
     }
 	pthread_cleanup_pop(1);
-	delwin(start);
-	del_panel(pan[1]);
-	delwin(cancel);
-	del_panel(pan[1]);
-	delwin(w);
-	del_panel(pan[0]);
+	delwin(conf.cancel);
+	del_panel(conf.pan[2]);
+	delwin(conf.start);
+	del_panel(conf.pan[1]);
+	delwin(conf.w);
+	del_panel(conf.pan[0]);
     pthread_cancel(pl->sqt);
     pthread_exit(NULL);
 }

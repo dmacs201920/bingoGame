@@ -1,30 +1,64 @@
 #include"Bingo_Header.h"
 extern int end_game_flag;
+
 void connect_to_server(char **err)
 {
     *err=NULL;
     end_game_flag=0;
     pthread_t gamet,getkeyt;
     int adl = sizeof(struct sockaddr);
+    int port_no[];
+    
     struct sockaddr_in ad;
     //int port;
     game_p par;
 
-    int startx = 7,starty = 60,row,col;
 
+    curs_set(1);
+    WINDOW *ser_det = newwin(20,50,6,50);
+    box(ser_det,0,0);
+	echo();
+	while(1)
+	{
+    mvwprintw(ser_det,2,2,"ENTER THE PORT NUMBER(PRESS -1 TO EXIT):");
+    refresh();
+    wrefresh(ser_det);
+    wscanw(ser_det,"%d",&port_no);
+
+if(port_no == -1)
+{
+    noecho();
+    delwin(ser_det);
+    clear();
+    refresh();
+    return;
+}
     bzero(&ad,sizeof(ad));
 
     par.sersd = socket(AF_INET,SOCK_STREAM,0);
     ad.sin_family=AF_INET;
     //port=get_port_num();
-    ad.sin_port=htons(5608);
+    ad.sin_port=htons(port_no);
     ad.sin_addr.s_addr=inet_addr(MY_ADDR);
     if((connect(par.sersd,ADCAST&ad,adl))!=0)
     {
-	close(par.sersd);
-	*err="Unable to connect to server";
-	return;
+	wattron(ser_det,COLOR_PAIR(4));
+    mvwprintw(ser_det,15,2,"UNABLE TO CONNECT TO SERVER!!!");
+	wattroff(ser_det,COLOR_PAIR(4));
+	continue;
     }
+    break;
+	}
+    noecho();
+
+    delwin(ser_det);
+    clear();
+    refresh();
+    
+    curs_set(0);
+    int startx = 7,starty = 60,row,col;
+
+    
 
    for(int i=0;i<5;++i)
     {

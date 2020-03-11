@@ -20,20 +20,29 @@ void* accept_t(void* arg)
     playerlist *pl=arg;
     player p;
     conf_p conf;
-    conf.w = newwin(15,45,10,40);
-    conf.pan= new_panel(conf.w);
-    int status;
+   if(( conf.w = newwin(15,45,10,40))==NULL)
+   {
+       pthread_exit("Unable to create WINDOW");
+       pl->status=-1;
+   }
+    if((conf.pan= new_panel(conf.w))==NULL)
+    {
+	delwin(conf.w);
+	pthread_exit("Unable to create PANEL");
+       pl->status=-1;
+    }
     node* t=pl->l.h;
     conf.lock=&pl->lock;
     conf.n=&pl->n;
     server_started_screen(conf.w,conf.pan,((player*)t->d)->ad,*conf.n);
-   // pthread_cleanup_push(cleanup_t,arg);
+    pthread_cleanup_push(cleanup_t,arg);
    int i,j;
     while(pl->n<5)
     {
 	if((p.sd=accept(((player*)t->d)->sd,ADCAST &p.ad,&p.adl))<0)
 	{
 	    pthread_exit("Unable to accept connction");
+	    pl->status=-1;
 	}
 	pthread_mutex_lock(&pl->lock);
 	++pl->n;
@@ -52,23 +61,23 @@ void* accept_t(void* arg)
 	}
 
     }
-	if((status=send(p.sd,p.array,sizeof(p.array),0))!=sizeof(p.array))
-	{
-	    continue;
-	}
 	p.bngcnt=0;
 	insertl(&pl->l,&p,-1);
 	conf.pl=pl->l.h->p;
 	server_started_screen(conf.w,conf.pan,((player*)t->d)->ad,*conf.n);
 	if(pthread_create(&(((player*)conf.pl->d)->tid),NULL,confirm_t,&conf)!=0)
 	{
-	    //error
+	    del_panel(conf.pan);
+	    delwin(conf.w);
+	    pthread_exit("Unable to create confirm pthread");
+	    pl->status=-1;
 	}
 	pthread_mutex_unlock(&pl->lock);
     }
-//    pthread_cleanup_pop(1);
+    pthread_cleanup_pop(1);
     del_panel(conf.pan);
     delwin(conf.w);
     pthread_cancel(pl->sqt);
+    pl->status=1;
     pthread_exit(NULL);
 }

@@ -42,10 +42,10 @@ void start_server(char **err)
 
     while(port_no>2000)
     {
-    p.ad.sin_port=htons(port_no);
-    if(bind(p.sd,ADCAST &p.ad,p.adl)<0)
-	--port_no;
-    break;
+	p.ad.sin_port=htons(port_no);
+	if(bind(p.sd,ADCAST &p.ad,p.adl)<0)
+	    --port_no;
+	break;
     }
     if(port_no<2000)
     {
@@ -63,6 +63,13 @@ void start_server(char **err)
     insertl(&par.get.pl.l,&p,0);
     //print p.sd
     //Start both accept and quitstart threads
+    if(pthread_create(&par.get.pl.acct,NULL,accept_t,&par.get.pl)!=0)
+    {
+	close(p.sd);
+	*err="Unable to create accept pthread";
+	return;
+    }
+    
     if(pthread_create(&par.get.pl.sqt,NULL,startquit,&par.get.pl)!=0)
     {
 	close(p.sd);
@@ -70,15 +77,17 @@ void start_server(char **err)
 	*err="Unable to create startquit pthread";
 	return;
     }
-    if(pthread_create(&par.get.pl.acct,NULL,accept_t,&par.get.pl)!=0)
-    {
-	close(p.sd);
-	*err="Unable to create accept pthread";
-	return;
-    }
-
+    int qw=0;
     while(par.get.pl.status==0)
+    {
+	printw("%d",++qw);
+	update_panels();
+	doupdate();
 	sleep(0.2);
+    }
+    pthread_cancel(par.get.pl.acct);
+    pthread_cancel(par.get.pl.sqt);
+    pthread_join(par.get.pl.acct,(void**)err);
     if(par.get.pl.status==-1)
     {
 	close(p.sd);
@@ -243,22 +252,22 @@ void start_server(char **err)
     if(end_game_flag!=0)
 	pthread_join(serv_gamet,(void**)err);
 
-		for(i=0;i<5;i++)
-		{
-		    for(j=0;j<5;j++)
-		    {
-			del_panel(par.pan[i][j]);
-			delwin(par.get.bingo[i][j]);
-		    }
-		}
-		del_panel(par.chancepan);
-		delwin(par.playchance);
-		del_panel(par.bingcnt);
-		delwin(par.bingocnt);
+    for(i=0;i<5;i++)
+    {
+	for(j=0;j<5;j++)
+	{
+	    del_panel(par.pan[i][j]);
+	    delwin(par.get.bingo[i][j]);
+	}
+    }
+    del_panel(par.chancepan);
+    delwin(par.playchance);
+    del_panel(par.bingcnt);
+    delwin(par.bingocnt);
 
-		//	pthread_mutex_destoy(&par.get.get_m);
-		//	pthread_mutex_destoy(&par.get.done_mutex);
-		//	pthread_cond_destoy(&par.get.done);
-	    close(p.sd);
-		return;
+    //	pthread_mutex_destoy(&par.get.get_m);
+    //	pthread_mutex_destoy(&par.get.done_mutex);
+    //	pthread_cond_destoy(&par.get.done);
+    close(p.sd);
+    return;
 }

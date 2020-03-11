@@ -7,6 +7,7 @@ void* serv_game_t(void* arg)
     int counter,i,j,status;
     game_p *par=arg;
     node *Current_player=par->get.pl.l.h,*tr,*t,*trav=par->get.pl.l.h;
+
     int ch,flag=0,id;
     int startx = 7,starty = 60,row,col;
 
@@ -23,16 +24,18 @@ void* serv_game_t(void* arg)
 	    if(timedwait_cond(&par->get.done,&par->get.done_mutex,10)==0)
 	    {
 		pthread_mutex_lock(&par->get.get_m);
+		t = Current_player;
 		d.num=((player*)Current_player->d)->array[par->get.p][par->get.q];
 		do
 		{
-		    search_strike(((player*)tr->d)->array,((player*)Current_player->d)->array[par->get.x][par->get.y],&i,&j);
+		    search_strike(((player*)t->d)->array,((player*)Current_player->d)->array[par->get.x][par->get.y],&i,&j);
 		    if((((player*)t->d)->bngcnt+=bingos(((player*)t->d)->array,i,j))>4)
 			flag=1;
+		    t = t->n;
 		}while(t!=Current_player);
 		print_array(par->get.bingo,((player*)par->get.pl.l.h->d)->array,par->get.x,par->get.y);
 	    }
-	    else
+	    else		//OF TIMED WAIT
 	    {
 		pthread_mutex_lock(&par->get.get_m);
 		d.num=0;
@@ -44,7 +47,6 @@ void* serv_game_t(void* arg)
 		d.opp=((player*)tr->d)->plid;
 		d.bng=((player*)tr->d)->bngcnt;
 		send(((player*)tr->d)->sd,&d,sizeof(data),0);
-		t=Current_player->n;
 		tr=tr->n;
 		d.com='n';
 		for(;tr!=Current_player->n;tr=tr->n)
@@ -58,12 +60,14 @@ void* serv_game_t(void* arg)
 	    {
 		tr=Current_player->n;
 		d.com='t';
+
 		for(;tr!=Current_player->n;tr=tr->n)
 		    if(tr!=par->get.pl.l.h)
 		    {
 			d.bng=((player*)tr->d)->bngcnt;
 			send(((player*)tr->d)->sd,&d,sizeof(data),0);
 		    }
+
 		if(((player*)par->get.pl.l.h->d)->bngcnt>4)
 		{
 		    wattron(par->playchance,COLOR_PAIR(2)|A_BOLD|A_BLINK);

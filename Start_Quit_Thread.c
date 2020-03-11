@@ -3,12 +3,16 @@ void* startquit(void* arg)
 {
     playerlist *p=arg;
     int c;
-    while(!p->status)
+    while(p->status==0)
     {
 	c=getch();
+	update_panels();
+	doupdate();
 	switch(c)
 	{
 	    case '\n':
+		if(p->n==1)
+		    continue;
 		p->status=1;
 		break;
 	    case 'q':

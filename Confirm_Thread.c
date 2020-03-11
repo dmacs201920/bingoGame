@@ -10,6 +10,7 @@ void* confirm_t(void* arg)
 	p.pl->p->n=p.pl->n;
 	free(p.pl->d);
 	free(p.pl);
-	server_started_screen(p.w,p.start,p.cancel,p.pan,((player*)p.pl->d)->ad,*p.n);
+	--(*p.n);
+	server_started_screen(p.w,p.pan,((player*)p.pl->d)->ad,*p.n);
 	pthread_mutex_unlock(p.lock);
 }

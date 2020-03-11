@@ -69,7 +69,6 @@ if(port_no == -1)
 	for(int j=0;j<5;++j)
 	{
     	if(timed_recv(par.sersd,&par.get.array[i][j],sizeof(int),0,2)!=sizeof(int))
-//	if(read(par.sersd,&par.get.array,sizeof(par.get.array)!=sizeof(par.get.array)))
 	    {
 		close(par.sersd);
 		*err = "Array recieve error";

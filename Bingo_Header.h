@@ -173,5 +173,5 @@ void* confirm_t(void*);
 void* cleanup_t(void*);
 void connect_to_server(char **err);
 void* client_game(void* arg);
-void server_started_screen(WINDOW *w,WINDOW *start,WINDOW *cancel,PANEL *pan[3],struct sockaddr_in addr,int n);
+void server_started_screen(WINDOW *w,PANEL *pan,struct sockaddr_in addr,int n);
 

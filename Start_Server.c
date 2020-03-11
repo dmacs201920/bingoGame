@@ -17,8 +17,11 @@ extern int end_game_flag;
 void start_server(char **err)
 {
     int status=0,counter,port_no = 6000;
+    end_game_flag=0;
     pthread_t acct,sqt,serv_gamet;
     game_p par;
+    par.get.pl.status=0;
+    par.get.pl.n=1;
     player p;
     pthread_mutex_init(&par.get.pl.lock,NULL);
     fill_bingo(p.array);
@@ -35,24 +38,27 @@ void start_server(char **err)
     p.ad.sin_family=AF_INET;
     p.ad.sin_addr.s_addr=inet_addr(MY_ADDR);
     p.plid=0;
-    par.get.pl.n=1;
+
 
     while(port_no>2000)
     {
     p.ad.sin_port=htons(port_no);
     if(bind(p.sd,ADCAST &p.ad,p.adl)<0)
-    {
-	*err="Unable to bind with the local address";
 	--port_no;
-    }
     break;
     }
-
+    if(port_no<2000)
+    {
+	close(p.sd);
+	*err="Unable to bind with the local address";
+	return;
+    }
     if(listen(p.sd,5)<0)
     {
 	*err="Unable to listen on the port";
 	return;
     }
+
 
     insertl(&par.get.pl.l,&p,0);
     //print p.sd
@@ -79,13 +85,7 @@ void start_server(char **err)
 	return;
     }
     //print screen
-
-
-
-
     int startx = 7,starty = 60,row,col;
-
-
     par.playchance = newwin(3,120,3,starty);		//CREATES THE WINDOW AND RETURNS A POINTER TO THE PLAYCHANCE
     if(par.playchance==NULL)				
     {
@@ -259,6 +259,6 @@ void start_server(char **err)
 		//	pthread_mutex_destoy(&par.get.get_m);
 		//	pthread_mutex_destoy(&par.get.done_mutex);
 		//	pthread_cond_destoy(&par.get.done);
-		return;
 	    close(p.sd);
+		return;
 }

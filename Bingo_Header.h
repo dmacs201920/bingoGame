@@ -28,7 +28,7 @@ typedef struct
     int num;	//Number
     int bng;	//bingos number
     int opp;	//opponent
-}data;		//For sending and recving data
+}data;		//For sending and receiving data
 
 typedef struct
 {
@@ -60,7 +60,7 @@ typedef struct
 typedef struct
 {
     playerlist pl;
-    int x,y,p,q;	// p & q are for getting data, x and y are for knowing current highlighted position
+    int x,y,p,q;
     WINDOW *bingo[5][5];
     int array[5][5];
     pthread_t pid;
@@ -105,9 +105,9 @@ typedef struct
 {
 	node* pl;
 	pthread_mutex_t *lock;
-    WINDOW *w,*start,*cancel;
-    PANEL *pan[3];
-    int *n;
+  	  WINDOW *w;
+  	  PANEL *pan;
+   	 int *n;
 }conf_p;
 	/*
 	   
@@ -126,7 +126,7 @@ typedef struct
     int sersd;
     getkey_p get;
     pthread_t pid;
-}game_p;
+}game_p;		//REQUREMENTS FOR RUNNING A GAME
 
 typedef struct
 {

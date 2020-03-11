@@ -16,7 +16,7 @@ extern int end_game_flag;
 
 void start_server(char **err)
 {
-    int status=0,counter;
+    int status=0,counter,port_no = 6000;
     pthread_t acct,sqt,serv_gamet;
     game_p par;
     player p;
@@ -33,14 +33,19 @@ void start_server(char **err)
     }
     p.bngcnt=0;
     p.ad.sin_family=AF_INET;
-    p.ad.sin_port=htons(5608);
     p.ad.sin_addr.s_addr=inet_addr(MY_ADDR);
     p.plid=0;
     par.get.pl.n=1;
+
+    while(port_no>2000)
+    {
+    p.ad.sin_port=htons(port_no);
     if(bind(p.sd,ADCAST &p.ad,p.adl)<0)
     {
 	*err="Unable to bind with the local address";
-	return;
+	--port_no;
+    }
+    break;
     }
 
     if(listen(p.sd,5)<0)

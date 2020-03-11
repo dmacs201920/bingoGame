@@ -7,20 +7,24 @@ void connect_to_server(char **err)
     end_game_flag=0;
     pthread_t gamet,getkeyt;
     int adl = sizeof(struct sockaddr);
-    int port_no[];
+    int port_no;
     
     struct sockaddr_in ad;
     //int port;
     game_p par;
 
+    
 
     curs_set(1);
+    cbreak();
     WINDOW *ser_det = newwin(20,50,6,50);
     box(ser_det,0,0);
 	echo();
 	while(1)
 	{
-    mvwprintw(ser_det,2,2,"ENTER THE PORT NUMBER(PRESS -1 TO EXIT):");
+    mvwprintw(ser_det,2,2,"USE ONLY BACKSPACE AND DIGITS!");
+    mvwprintw(ser_det,4,2,"ENTER PORT NUMBER(PRESS -1 TO EXIT):");
+
     refresh();
     wrefresh(ser_det);
     wscanw(ser_det,"%d",&port_no);

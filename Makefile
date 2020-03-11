@@ -2,8 +2,10 @@ cc=gcc
 cflags=-c -g
 oflag=-g -o
 lflags=-lpanel -lncurses -lpthread
-nbingo: Accept_Thread.o cdll.o Bingo_Main.o Fill_Bingo.o Get_Key.o Print_Main_Menu.o VS_Comp.o Bingos.o Search_and_Strike.o BingoDisp.o Client_Game_Thread.o Get_Key_Thread.o Connect_To_Server.o Print_Array.o Cond.o Recv_Thread.o Server_Game_Thread.o Start_Quit_Thread.o Start_Server.o Confirm_Thread.o
+nbingo: Server_started_screen.o Accept_Thread.o cdll.o Bingo_Main.o Fill_Bingo.o Get_Key.o Print_Main_Menu.o VS_Comp.o Bingos.o Search_and_Strike.o BingoDisp.o Client_Game_Thread.o Get_Key_Thread.o Connect_To_Server.o Print_Array.o Cond.o Recv_Thread.o Server_Game_Thread.o Start_Quit_Thread.o Start_Server.o Confirm_Thread.o
 	$(cc) $(oflag) $@ $^ $(lflags)
+Server_started_screen.o:Server_started_screen.c Bingo_Header.h
+	$(cc) $(cflags) $<  $(lflags)
 Accept_Thread.o:Accept_Thread.c Bingo_Header.h
 	$(cc) $(cflags) $<  $(lflags)
 Server_Game_Thread.o: Server_Game_Thread.c Bingo_Header.h

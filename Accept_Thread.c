@@ -32,12 +32,14 @@ void* accept_t(void* arg)
     init_pair(2,COLOR_RED,COLOR_BLACK);
     init_pair(3,COLOR_BLUE,COLOR_BLACK);
     int status;
-    init(&pl->l,sizeof(player),cmp,NULL,cpy);
+//    init(&pl->l,sizeof(player),cmp,NULL,cpy);
     node* t=pl->l.h;
-	conf.lock=&pl->lock;
-    fill_bingo(((player*)t->d)->array);
-    ((player*)t->d)->bngcnt=0;
+conf.lock=&pl->lock;
+   // fill_bingo(((player*)t->d)->array);
+ //   ((player*)t->d)->bngcnt=0;
 	pthread_cleanup_push(cleanup_t,arg);
+	conf.n=&pl->n;
+	server_started_screen(conf.w,conf.start,conf.cancel,conf.pan,((player*)conf.pl->d)->ad,*conf.n);
     while(pl->n<5)
     {
 	if((p.sd=accept(((player*)t->d)->sd,ADCAST &p.ad,&p.adl))<0)
@@ -56,6 +58,7 @@ void* accept_t(void* arg)
 	p.bngcnt=0;
 	insertl(&pl->l,&p,-1);
 	conf.pl=pl->l.h->p;
+	server_started_screen(conf.w,conf.start,conf.cancel,conf.pan,((player*)conf.pl->d)->ad,*conf.n);
 	if(pthread_create(&(((player*)conf.pl->d)->tid),NULL,confirm_t,&conf)!=0)
 	{
 		//error

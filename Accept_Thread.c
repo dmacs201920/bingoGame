@@ -20,19 +20,6 @@ void* accept_t(void* arg)
     player p;
     p.adl=sizeof(p.ad);
     conf_p *pl=arg;;
-/*
-    if(( conf.w = newwin(15,45,10,40))==NULL)
-   {
-       pthread_exit("Unable to create WINDOW");
-       pl->status=-1;
-   }
-    if((conf.pan= new_panel(conf.w))==NULL)
-    {
-	delwin(conf.w);
-	pthread_exit("Unable to create PANEL");
-       pl->status=-1;
-    }
-    */
     node* t=pl->pl->l.h;
     server_started_screen(pl->w,pl->pan,((player*)t->d)->ad,*(pl->n));
    int i,j;

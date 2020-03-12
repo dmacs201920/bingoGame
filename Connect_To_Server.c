@@ -5,9 +5,8 @@ void connect_to_server(char **err)
 {
     *err=NULL;
     end_game_flag=0;
-    pthread_t gamet,getkeyt;
-    int adl = sizeof(struct sockaddr);
-    int port_no;
+    int adl = sizeof(struct sockaddr),port_no;
+    
     
     struct sockaddr_in ad;
     //int port;
@@ -18,10 +17,38 @@ void connect_to_server(char **err)
     curs_set(1);
     cbreak();
     WINDOW *ser_det = newwin(20,50,6,50);
+	if(ser_det==NULL)
+	{
+	*err = "ser_det window error";
+	delwin(ser_det);
+	clear();
+	refresh();
+	return;
+
+	}
+
     box(ser_det,0,0);
-	echo();
+
+
+    if(par.sersd = socket(AF_INET,SOCK_STREAM,0)==-1)		//otherwise check for errno
+	{
+
+	*err = "Socket create error";
+	delwin(ser_det);
+	clear();
+	refresh();
+	return;
+		
+	}
+		echo();
+
+    bzero(&ad,sizeof(ad));
+    ad.sin_family=AF_INET;
+    ad.sin_addr.s_addr=inet_addr(MY_ADDR);
+
 	while(1)
 	{
+
     mvwprintw(ser_det,2,2,"USE ONLY BACKSPACE AND DIGITS!");
     mvwprintw(ser_det,4,2,"ENTER PORT NUMBER(PRESS -1 TO EXIT):");
 
@@ -29,30 +56,26 @@ void connect_to_server(char **err)
     wrefresh(ser_det);
     wscanw(ser_det,"%d",&port_no);
 
-if(port_no == -1)
-{
-    noecho();
-    delwin(ser_det);
-    clear();
-    refresh();
-    return;
-}
-    bzero(&ad,sizeof(ad));
+		if(port_no == -1)
+		{
+		    noecho();
+		    delwin(ser_det);
+		    clear();
+		    refresh();
+		    return;
+		}
+    ad.sin_port=htons(port_no);   
+	    if((connect(par.sersd,ADCAST&ad,adl))!=0)
+	    {
+		wattron(ser_det,COLOR_PAIR(4));
+	    mvwprintw(ser_det,15,2,"UNABLE TO CONNECT TO SERVER!!!");
+		wattroff(ser_det,COLOR_PAIR(4));
+		continue;
+	    }
 
-    par.sersd = socket(AF_INET,SOCK_STREAM,0);
-    ad.sin_family=AF_INET;
-    //port=get_port_num();
-    ad.sin_port=htons(port_no);
-    ad.sin_addr.s_addr=inet_addr(MY_ADDR);
-    if((connect(par.sersd,ADCAST&ad,adl))!=0)
-    {
-	wattron(ser_det,COLOR_PAIR(4));
-    mvwprintw(ser_det,15,2,"UNABLE TO CONNECT TO SERVER!!!");
-	wattroff(ser_det,COLOR_PAIR(4));
-	continue;
-    }
-    break;
-	}
+	    break;
+	}		//while close
+
     noecho();
 
     delwin(ser_det);
@@ -63,7 +86,6 @@ if(port_no == -1)
     int startx = 7,starty = 60,row,col;
 
     
-
    for(int i=0;i<5;++i)
     {
 	for(int j=0;j<5;++j)
@@ -94,9 +116,6 @@ if(port_no == -1)
     if(par.playchance==NULL)				
     {
 	*err="Unable to create WINDOW";				//ERROR MSG
-	//	pthread_mutex_destoy(&par.get.get_m);
-	//	pthread_mutex_destoy(&par.get.done_mutex);
-	//	pthread_cond_destoy(&par.get.done);
 	return;
     }
 
@@ -118,9 +137,6 @@ if(port_no == -1)
 	delwin(par.playchance);
 
 	*err="Unable to create WINDOW";				//ERROR MSG
-	//	pthread_mutex_destoy(&par.get.get_m);
-	//	pthread_mutex_destoy(&par.get.done_mutex);
-	//	pthread_cond_destoy(&par.get.done);
 	return;
     }
 
@@ -132,9 +148,6 @@ if(port_no == -1)
 
 	delwin(par.bingocnt);
 	*err="Unable to create PANEL";				//ERROR MSG
-	//	pthread_mutex_destoy(&par.get.get_m);
-	//	pthread_mutex_destoy(&par.get.done_mutex);
-	//	pthread_cond_destoy(&par.get.done);
 	return;
     }
 
@@ -146,8 +159,6 @@ if(port_no == -1)
     {
 	for(j=0;j<5;j++)
 	{
-
-
 	    par.get.bingo[i][j] = newwin(width,length,startx,starty);
 	    if(par.get.bingo[i][j]==NULL)
 	    {
@@ -165,11 +176,9 @@ if(port_no == -1)
 			delwin(par.get.bingo[t1][t2]);
 		    }
 		*err="Unable to create WINDOW";				//ERROR MSG
-		//	pthread_mutex_destoy(&par.get.get_m);
-		//	pthread_mutex_destoy(&par.get.done_mutex);
-		//	pthread_cond_destoy(&par.get.done);
 		return;
 	    }
+
 	    par.pan[i][j] = new_panel(par.get.bingo[i][j]);
 	    if(par.pan[i][j]==NULL)
 	    {
@@ -189,9 +198,6 @@ if(port_no == -1)
 			}
 
 		*err="Unable to create PANEL";				//ERROR MSG
-		//	pthread_mutex_destoy(&par.get.get_m);
-		//	pthread_mutex_destoy(&par.get.done_mutex);
-		//	pthread_cond_destoy(&par.get.done);
 		return;
 	    }
 
@@ -222,15 +228,9 @@ if(port_no == -1)
 
 
 
-
-
     if(pthread_create(&par.pid,NULL,get_key_t,&par.get)<0)
     {
 	close(par.sersd);
-	del_panel(par.chancepan);
-	delwin(par.playchance);
-	del_panel(par.bingcnt);
-	delwin(par.bingocnt);
 
 	for(t1=0;t1<5;++t1)
 	    for(t2=0;t2<5;++t2)
@@ -238,6 +238,12 @@ if(port_no == -1)
 		delwin(par.get.bingo[t1][t2]);
 		del_panel(par.pan[t1][t2]);
 	    }
+	del_panel(par.chancepan);
+	delwin(par.playchance);
+	del_panel(par.bingcnt);
+	delwin(par.bingocnt);
+
+
 	*err="Unable to create Get Key thread";
 	//	pthread_mutex_destoy(&par.get.get_m);
 	//	pthread_mutex_destoy(&par.get.done_mutex);
@@ -249,10 +255,6 @@ if(port_no == -1)
     {
 	close(par.sersd);
 	pthread_cancel(par.pid);
-	del_panel(par.chancepan);
-	delwin(par.playchance);
-	del_panel(par.bingcnt);
-	delwin(par.bingocnt);
 
 	for(t1=0;t1<5;++t1)
 	    for(t2=0;t2<5;++t2)
@@ -260,6 +262,11 @@ if(port_no == -1)
 		del_panel(par.pan[t1][t2]);
 		delwin(par.get.bingo[t1][t2]);
 	    }
+	del_panel(par.chancepan);
+	delwin(par.playchance);
+	del_panel(par.bingcnt);
+	delwin(par.bingocnt);
+
 
 	*err="Unable to create Game thread";
 	//	pthread_mutex_destoy(&par.get.get_m);
@@ -276,11 +283,6 @@ if(port_no == -1)
 		sleep(0.2);
 		break;
 
-
-	    case -1:
-
-		//TERMINATE	
-
 	    default:
 		close(par.sersd);
 		for(i=0;i<5;i++)
@@ -296,9 +298,6 @@ if(port_no == -1)
 		del_panel(par.bingcnt);
 		delwin(par.bingocnt);
 
-		//	pthread_mutex_destoy(&par.get.get_m);
-		//	pthread_mutex_destoy(&par.get.done_mutex);
-		//	pthread_cond_destoy(&par.get.done);
 		return;
 
 

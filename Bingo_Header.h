@@ -35,8 +35,6 @@ typedef struct
     pthread_mutex_t lock;	//For mutex locking cdll
     cdll l;			// Circular double linked list for storing player data
     int n;			//Number of players playing
-    pthread_t acct,sqt;		//Accept thread and start quit thread, thread id
-    int status;			// Variable for flagging
 }playerlist;
 
 typedef struct
@@ -63,7 +61,7 @@ typedef struct
     int x,y,p,q;
     WINDOW *bingo[5][5];
     int array[5][5];
-    pthread_t pid;
+    pthread_t gameid;
     pthread_mutex_t get_m,done_mutex;
     pthread_cond_t done;
 }getkey_p;
@@ -103,11 +101,13 @@ typedef struct
 
 typedef struct
 {
-	node* pl;
+    playerlist *pl;
+	node* p;
 	pthread_mutex_t *lock;
   	  WINDOW *w;
   	  PANEL *pan;
    	 int *n;
+	 pthread_t sqt,acct;
 }conf_p;
 	/*
 	   
@@ -115,17 +115,11 @@ typedef struct
 
 typedef struct
 {
-    pthread_t* tid;
-    int n,sd;
-}esc_p;
-
-typedef struct
-{
     WINDOW *playchance,*bingocnt;
     PANEL *pan[5][5],*chancepan,*bingcnt;
     int sersd;
     getkey_p get;
-    pthread_t pid;
+    pthread_t getid;
 }game_p;		//REQUREMENTS FOR RUNNING A GAME
 
 typedef struct

@@ -80,6 +80,7 @@ void* serv_game_t(void* arg)
 		    update_panels();
 		    doupdate();
 		    sleep(2);
+<<<<<<< HEAD
 		del_panel(par.chancepan);
 		delwin(par.playchance);
 		del_panel(par.bingcnt);
@@ -93,6 +94,9 @@ void* serv_game_t(void* arg)
 		    }
 
 		    pthread_cancel(par->pid);
+=======
+		    pthread_cancel(par->getid);
+>>>>>>> 5783b32e2f8dc9476eb5ae541a6de27bcfbb3877
 		    end_game_flag = 1;
 		    pthread_exit(NULL);
 		}
@@ -103,6 +107,7 @@ void* serv_game_t(void* arg)
 		    wattroff(par->playchance,COLOR_PAIR(2)|A_BOLD|A_BLINK); 
 		    update_panels();
 		    doupdate();		sleep(2);
+<<<<<<< HEAD
 		del_panel(par.chancepan);
 		delwin(par.playchance);
 		del_panel(par.bingcnt);
@@ -116,6 +121,9 @@ void* serv_game_t(void* arg)
 		    }
 
 		    pthread_cancel(par->pid);
+=======
+		    pthread_cancel(par->getid);
+>>>>>>> 5783b32e2f8dc9476eb5ae541a6de27bcfbb3877
 		    end_game_flag = 2;
 		    pthread_exit(NULL);
 
@@ -195,6 +203,7 @@ continue;
 		    update_panels();
 		    doupdate();
 		    sleep(2);
+<<<<<<< HEAD
 		del_panel(par.chancepan);
 		delwin(par.playchance);
 		del_panel(par.bingcnt);
@@ -208,6 +217,9 @@ continue;
 		    }
 
 		    pthread_cancel(par->pid);
+=======
+		    pthread_cancel(par->getid);
+>>>>>>> 5783b32e2f8dc9476eb5ae541a6de27bcfbb3877
 		    end_game_flag = 1;
 		    pthread_exit(NULL);
 
@@ -220,6 +232,7 @@ continue;
 		    wattroff(par->playchance,COLOR_PAIR(2)|A_BOLD|A_BLINK); 
 		    update_panels();
 		    doupdate();		sleep(2);
+<<<<<<< HEAD
 		del_panel(par.chancepan);
 		delwin(par.playchance);
 		del_panel(par.bingcnt);
@@ -234,6 +247,9 @@ continue;
 
 
 		    pthread_cancel(par->pid);
+=======
+		    pthread_cancel(par->getid);
+>>>>>>> 5783b32e2f8dc9476eb5ae541a6de27bcfbb3877
 		    end_game_flag = 2;
 		    pthread_exit(NULL);
 
@@ -244,7 +260,7 @@ continue;
 
     end_game_flag=-1;
     err="No other player playing";
-    pthread_cancel(par->pid);
+    pthread_cancel(par->getid);
     close(((player*)trav->d)->sd);
     trav=trav->n;
     for(;trav!=par->get.pl.l.h;trav=trav->n)

@@ -21,7 +21,7 @@ void* client_game_t(void *arg)
 	if(read(par->sersd,&d,sizeof(data))!=sizeof(data))	// if recv is not functioning
 	{
 	    end_game_flag = -1;
-	    pthread_cancel(par->pid);
+	    pthread_cancel(par->getid);
 	    //Print the error
 	    pthread_exit(NULL);
 	}
@@ -137,7 +137,7 @@ void* client_game_t(void *arg)
 		    update_panels();
 		    doupdate();
 		    sleep(2);
-		    pthread_cancel(par->pid);
+		    pthread_cancel(par->getid);
 		    end_game_flag = 1;
 		    pthread_exit(NULL);
 
@@ -150,7 +150,7 @@ void* client_game_t(void *arg)
 		    wattroff(par->playchance,COLOR_PAIR(2)|A_BOLD|A_BLINK); 
 		    update_panels();
 		    doupdate();		sleep(2);
-		    pthread_cancel(par->pid);
+		    pthread_cancel(par->getid);
 		    end_game_flag = 2;
 		    pthread_exit(NULL);
 
@@ -172,7 +172,7 @@ void* client_game_t(void *arg)
 	       update_panels();
 	       doupdate();
 	       sleep(2);
-	       pthread_cancel(par->pid);
+	       pthread_cancel(par->getid);
 	       end_game_flag = 1;
 	       pthread_exit(NULL);
 	       }
@@ -183,7 +183,7 @@ void* client_game_t(void *arg)
 	       wattron(par->playchance,COLOR_PAIR(2)|A_BOLD|A_BLINK); 
 	       update_panels();
 	       doupdate();		sleep(2);
-	       pthread_cancel(par->pid);
+	       pthread_cancel(par->getid);
 	       end_game_flag = 2;
 	       pthread_exit(NULL);
 	       }

@@ -12,7 +12,7 @@ print_array(par->bingo,par->array,(par->x),(par->y));
 	switch(ch)
 	{
 	    case 'q':
-		pthread_cancel(par->pid);
+		pthread_cancel(par->gameid);
 		end_game_flag = -1;
 		pthread_exit(NULL);
 		break;

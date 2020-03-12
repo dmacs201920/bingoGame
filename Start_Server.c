@@ -16,13 +16,13 @@ extern int end_game_flag;
 
 void start_server(char **err)
 {
-    int status=0,counter,port_no = 6000;
+    int counter,port_no = 6000;
     end_game_flag=0;
-    pthread_t acct,sqt,serv_gamet;
     game_p par;
     par.get.pl.status=0;
     par.get.pl.n=1;
     player p;
+    conf_p;
     pthread_mutex_init(&par.get.pl.lock,NULL);
     fill_bingo(p.array);
 
@@ -61,34 +61,47 @@ void start_server(char **err)
 
 
     insertl(&par.get.pl.l,&p,0);
+    conf_p conf;
+    conf.status=0;
+    conf.lock=&par.get.pl.lock;
+    conf.n=&par.get.pl.n;
+    if(( conf.w = newwin(15,45,10,40))==NULL)
+   {
+       close(p.sd);
+       *err="Unable to create WINDOW";
+       return;
+   }
+    if((conf.pan= new_panel(conf.w))==NULL)
+    {
+	delwin(conf.w);
+	*err="Unable to create PANEL";
+	close(p.sd);
+	return;
+    }
     //print p.sd
     //Start both accept and quitstart threads
-    if(pthread_create(&par.get.pl.acct,NULL,accept_t,&par.get.pl)!=0)
+    if(pthread_create(&conf.acct,NULL,accept_t,&conf)!=0)
     {
 	close(p.sd);
 	*err="Unable to create accept pthread";
 	return;
     }
     
-    if(pthread_create(&par.get.pl.sqt,NULL,startquit,&par.get.pl)!=0)
+    if(pthread_create(&conf.sqt,NULL,startquit,&conf)!=0)
     {
 	close(p.sd);
-	pthread_cancel(acct);
+	pthread_cancel(conf.acct);
 	*err="Unable to create startquit pthread";
 	return;
     }
-    int qw=0;
     while(par.get.pl.status==0)
-    {
-	printw("%d",++qw);
-	update_panels();
-	doupdate();
 	sleep(0.2);
-    }
-    pthread_cancel(par.get.pl.acct);
-    pthread_cancel(par.get.pl.sqt);
+    del_panel(conf.pan);
+    delwin(conf.w);
+    clean();
+    refresh();
     pthread_join(par.get.pl.acct,(void**)err);
-    if(par.get.pl.status==-1)
+    if(conf.status==-1)
     {
 	close(p.sd);
 	return;
@@ -221,18 +234,18 @@ void start_server(char **err)
 
 
 
-    if(pthread_create(&par.pid,NULL,get_key_t,&par.get)!=0)
+    if(pthread_create(&par.getid,NULL,get_key_t,&par.get)!=0)
     {
 	close(par.sersd);
-	delwin(par.playchance);
 	del_panel(par.chancepan);
-	delwin(par.bingocnt);
+	delwin(par.playchance);
 	del_panel(par.bingcnt);
+	delwin(par.bingocnt);
 	for(t1=0;t1<5;++t1)
 	    for(t2=0;t2<5;++t2)
 	    {
-		delwin(par.get.bingo[t1][t2]);
 		del_panel(par.pan[t1][t2]);
+		delwin(par.get.bingo[t1][t2]);
 	    }
 	*err="Unable to create Get Key thread";
 	//	pthread_mutex_destoy(&par.get.get_m);
@@ -241,8 +254,19 @@ void start_server(char **err)
 	return;
     }
 
-    if(pthread_create(&serv_gamet,NULL,serv_game_t,&par)!=0)
+    if(pthread_create(&par.get.gameid,NULL,serv_game_t,&par)!=0)
     {
+	pthread_cancel(par.getid);
+	del_panel(par.chancepan);
+	delwin(par.playchance);
+	del_panel(par.bingcnt);
+	delwin(par.bingocnt);
+	for(t1=0;t1<5;++t1)
+	    for(t2=0;t2<5;++t2)
+	    {
+		del_panel(par.pan[t1][t2]);
+		delwin(par.get.bingo[t1][t2]);
+	    }
 	close(p.sd);
 	*err="Unable to create game pthread";
 	return;

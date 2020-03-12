@@ -76,7 +76,7 @@ void* serv_game_t(void* arg)
 		    update_panels();
 		    doupdate();
 		    sleep(2);
-		    pthread_cancel(par->pid);
+		    pthread_cancel(par->getid);
 		    end_game_flag = 1;
 		    pthread_exit(NULL);
 		}
@@ -87,7 +87,7 @@ void* serv_game_t(void* arg)
 		    wattroff(par->playchance,COLOR_PAIR(2)|A_BOLD|A_BLINK); 
 		    update_panels();
 		    doupdate();		sleep(2);
-		    pthread_cancel(par->pid);
+		    pthread_cancel(par->getid);
 		    end_game_flag = 2;
 		    pthread_exit(NULL);
 
@@ -158,7 +158,7 @@ void* serv_game_t(void* arg)
 		    update_panels();
 		    doupdate();
 		    sleep(2);
-		    pthread_cancel(par->pid);
+		    pthread_cancel(par->getid);
 		    end_game_flag = 1;
 		    pthread_exit(NULL);
 
@@ -171,7 +171,7 @@ void* serv_game_t(void* arg)
 		    wattroff(par->playchance,COLOR_PAIR(2)|A_BOLD|A_BLINK); 
 		    update_panels();
 		    doupdate();		sleep(2);
-		    pthread_cancel(par->pid);
+		    pthread_cancel(par->getid);
 		    end_game_flag = 2;
 		    pthread_exit(NULL);
 
@@ -182,7 +182,7 @@ void* serv_game_t(void* arg)
 
     end_game_flag=-1;
     err="No other player playing";
-    pthread_cancel(par->pid);
+    pthread_cancel(par->getid);
     close(((player*)trav->d)->sd);
     trav=trav->n;
     for(;trav!=par->get.pl.l.h;trav=trav->n)

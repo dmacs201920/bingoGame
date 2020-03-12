@@ -224,7 +224,7 @@ if(port_no == -1)
 
 
 
-    if(pthread_create(&par.pid,NULL,get_key_t,&par.get)<0)
+    if(pthread_create(&par.getid,NULL,get_key_t,&par.get)<0)
     {
 	close(par.sersd);
 	del_panel(par.chancepan);
@@ -245,10 +245,10 @@ if(port_no == -1)
 	return;
     }
 
-    if(pthread_create(&par.get.pid,NULL,client_game_t,&par)<0)
+    if(pthread_create(&par.get.gameid,NULL,client_game_t,&par)<0)
     {
 	close(par.sersd);
-	pthread_cancel(par.pid);
+	pthread_cancel(par.getid);
 	del_panel(par.chancepan);
 	delwin(par.playchance);
 	del_panel(par.bingcnt);

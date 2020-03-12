@@ -23,6 +23,7 @@ void start_server(char **err)
     par.get.pl.status=0;
     par.get.pl.n=1;
     player p;
+    conf_p;
     pthread_mutex_init(&par.get.pl.lock,NULL);
     fill_bingo(p.array);
 
@@ -241,8 +242,16 @@ void start_server(char **err)
 	return;
     }
 
-    if(pthread_create(&serv_gamet,NULL,serv_game_t,&par)!=0)
+    if(pthread_create(&par.getid,NULL,get_key_t,&par.get)!=0)
     {
+	close(p.sd);
+	*err="Unable to create get key pthread";
+	return;
+    }
+
+    if(pthread_create(&par.get.gameid,NULL,serv_game_t,&par)!=0)
+    {
+	pthread_cancel(par.getid);
 	close(p.sd);
 	*err="Unable to create game pthread";
 	return;

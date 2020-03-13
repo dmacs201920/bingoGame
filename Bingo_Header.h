@@ -106,7 +106,7 @@ typedef struct
 	pthread_mutex_t *lock;
   	  WINDOW *w;
   	  PANEL *pan;
-   	 int *n;
+   	 int *n,status;
 	 pthread_t sqt,acct;
 }conf_p;
 	/*

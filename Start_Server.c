@@ -3,7 +3,7 @@
 
 void cpy(void* d,void* s)
 {
-    *(player*)d=*(player*)s;
+    bcopy(s,d,sizeof(player));
 }
 int cmp(void* d1,void* d2)
 {
@@ -19,12 +19,11 @@ void start_server(char **err)
     int counter,port_no = 6000;
     end_game_flag=0;
     game_p par;
-    par.get.pl.status=0;
     par.get.pl.n=1;
     player p;
-    conf_p;
     pthread_mutex_init(&par.get.pl.lock,NULL);
     fill_bingo(p.array);
+
 
     p.adl=sizeof(p.ad);
     init(&par.get.pl.l,sizeof(player),cmp,NULL,cpy);
@@ -35,6 +34,7 @@ void start_server(char **err)
 	return;
     }
     p.bngcnt=0;
+    bzero(&p.ad,sizeof(p.ad));
     p.ad.sin_family=AF_INET;
     p.ad.sin_addr.s_addr=inet_addr(MY_ADDR);
     p.plid=0;
@@ -44,7 +44,10 @@ void start_server(char **err)
     {
 	p.ad.sin_port=htons(port_no);
 	if(bind(p.sd,ADCAST &p.ad,p.adl)<0)
+	{
 	    --port_no;
+	    continue;
+	}
 	break;
     }
     if(port_no<2000)
@@ -65,6 +68,7 @@ void start_server(char **err)
     conf.status=0;
     conf.lock=&par.get.pl.lock;
     conf.n=&par.get.pl.n;
+    conf.pl=&par.get.pl;
     if(( conf.w = newwin(15,45,10,40))==NULL)
    {
        close(p.sd);
@@ -94,13 +98,13 @@ void start_server(char **err)
 	*err="Unable to create startquit pthread";
 	return;
     }
-    while(par.get.pl.status==0)
+    while(conf.status==0)
 	sleep(0.2);
     del_panel(conf.pan);
     delwin(conf.w);
-    clean();
+    clear();
     refresh();
-    pthread_join(par.get.pl.acct,(void**)err);
+    pthread_join(conf.acct,(void**)err);
     if(conf.status==-1)
     {
 	close(p.sd);
@@ -274,7 +278,7 @@ void start_server(char **err)
     while(end_game_flag==0)
 	sleep(0.1);
     if(end_game_flag!=0)
-	pthread_join(serv_gamet,(void**)err);
+	pthread_join(par.get.gameid,(void**)err);
 
     for(i=0;i<5;i++)
     {

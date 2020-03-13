@@ -22,9 +22,9 @@ void* accept_t(void* arg)
     conf_p *pl=arg;;
     node* t=pl->pl->l.h;
     server_started_screen(pl->w,pl->pan,((player*)t->d)->ad,*(pl->n));
-   int i,j;
+    int i,j;
     pthread_cleanup_push(cleanup_t,arg);
-    while(pl->n<5)
+    while(*(pl->n)<5)
     {
 senderr:
 	if((p.sd=accept(((player*)t->d)->sd,ADCAST &p.ad,&p.adl))<0)
@@ -37,20 +37,23 @@ senderr:
 	}
 	pthread_mutex_lock(pl->lock);
 	fill_bingo(p.array);
-   for(i=0;i<5;++i)
-    {
-	for(j=0;j<5;++j)
+	for(i=0;i<5;++i)
 	{
-    	if(send(p.sd,&p.array[i][j],sizeof(int),0)!=sizeof(int))
+	    for(j=0;j<5;++j)
 	    {
-	    close(p.sd);
-	    pthread_mutex_unlock(&pl->lock);
-	    goto senderr;
+		if(send(p.sd,&p.array[i][j],sizeof(int),0)!=sizeof(int))
+		{
+		    close(p.sd);
+		    pthread_mutex_unlock(pl->lock);
+		    printw("\nSeand Err\n");
+		    refresh();
+		    sleep(2);
+		    goto senderr;
+		}
+
 	    }
 
 	}
-
-    }
 	p.bngcnt=0;
 	insertl(&pl->pl->l,&p,-1);
 	pl->p=pl->pl->l.h->p;
@@ -62,11 +65,11 @@ senderr:
 	}
 	++(*(pl->n));
 	server_started_screen(pl->w,pl->pan,((player*)t->d)->ad,*(pl->n));
-	pthread_mutex_unlock(&pl->lock);
+	pthread_mutex_unlock(pl->lock);
     }
     pthread_cleanup_pop(1);
-    del_panel(conf.pan);
-    delwin(conf.w);
+    del_panel(pl->pan);
+    delwin(pl->w);
     pthread_cancel(pl->sqt);
     pl->status=1;
     pthread_exit(NULL);

@@ -4,7 +4,7 @@ void* serv_game_t(void* arg)
 {
     char* err=NULL;
     data d;
-    int i,j,status;
+    int i,j,status,t1,t2;
     game_p *par=arg;
     node *Current_player=par->get.pl.l.h,*tr;
 
@@ -36,7 +36,7 @@ void* serv_game_t(void* arg)
 
 		}while(tr!=Current_player);
 		print_array(par->get.bingo,((player*)par->get.pl.l.h->d)->array,par->get.x,par->get.y);
-		bingodisp(par->bingont,((player*)par->get.pl.l.h->d)->bngcnt);
+		bingodisp(par->bingocnt,((player*)par->get.pl.l.h->d)->bngcnt);
 
 	    }
 	    else		//OF TIMED WAIT
@@ -80,19 +80,19 @@ void* serv_game_t(void* arg)
 		    update_panels();
 		    doupdate();
 		    sleep(2);
-		del_panel(par.chancepan);
-		delwin(par.playchance);
-		del_panel(par.bingcnt);
-		delwin(par.bingocnt);
+		del_panel(par->chancepan);
+		delwin(par->playchance);
+		del_panel(par->bingcnt);
+		delwin(par->bingocnt);
 
 		for(t1=0;t1<5;++t1)
 		    for(t2=0;t2<5;++t2)
 		    {
-			del_panel(par.pan[t1][t2]);
-			delwin(par.get.bingo[t1][t2]);
+			del_panel(par->pan[t1][t2]);
+			delwin(par->get.bingo[t1][t2]);
 		    }
 
-		    pthread_cancel(par->pid);
+		    pthread_cancel(par->getid);
 		    end_game_flag = 1;
 		    pthread_exit(NULL);
 		}
@@ -103,19 +103,19 @@ void* serv_game_t(void* arg)
 		    wattroff(par->playchance,COLOR_PAIR(2)|A_BOLD|A_BLINK); 
 		    update_panels();
 		    doupdate();		sleep(2);
-		del_panel(par.chancepan);
-		delwin(par.playchance);
-		del_panel(par.bingcnt);
-		delwin(par.bingocnt);
+		del_panel(par->chancepan);
+		delwin(par->playchance);
+		del_panel(par->bingcnt);
+		delwin(par->bingocnt);
 
 		for(t1=0;t1<5;++t1)
 		    for(t2=0;t2<5;++t2)
 		    {
-			del_panel(par.pan[t1][t2]);
-			delwin(par.get.bingo[t1][t2]);
+			del_panel(par->pan[t1][t2]);
+			delwin(par->get.bingo[t1][t2]);
 		    }
 
-		    pthread_cancel(par->pid);
+		    pthread_cancel(par->getid);
 		    end_game_flag = 2;
 		    pthread_exit(NULL);
 
@@ -135,8 +135,8 @@ void* serv_game_t(void* arg)
 		--(par->get.pl.n);
 		Current_player->n->p = Current_player->p;
 		Current_player->p->n = Current_player->n;
-		free(Current_player>d);
-		free(Current->player);
+		free(Current_player->d);
+		free(Current_player);
 
 Current_player = tr;
 continue;
@@ -159,7 +159,7 @@ continue;
 	    }while(tr!=Current_player);
 
 	print_array(par->get.bingo,((player*)par->get.pl.l.h->d)->array,par->get.x,par->get.y);
-	bingodisp(par->bingont,((player*)par->get.pl.l.h->d)->bngcnt);
+	bingodisp(par->bingocnt,((player*)par->get.pl.l.h->d)->bngcnt);
 	}
 	if(flag!=1)
 	{
@@ -195,19 +195,19 @@ continue;
 		    update_panels();
 		    doupdate();
 		    sleep(2);
-		del_panel(par.chancepan);
-		delwin(par.playchance);
-		del_panel(par.bingcnt);
-		delwin(par.bingocnt);
+		del_panel(par->chancepan);
+		delwin(par->playchance);
+		del_panel(par->bingcnt);
+		delwin(par->bingocnt);
 
 		for(t1=0;t1<5;++t1)
 		    for(t2=0;t2<5;++t2)
 		    {
-			del_panel(par.pan[t1][t2]);
-			delwin(par.get.bingo[t1][t2]);
+			del_panel(par->pan[t1][t2]);
+			delwin(par->get.bingo[t1][t2]);
 		    }
 
-		    pthread_cancel(par->pid);
+		    pthread_cancel(par->getid);
 		    end_game_flag = 1;
 		    pthread_exit(NULL);
 
@@ -220,20 +220,20 @@ continue;
 		    wattroff(par->playchance,COLOR_PAIR(2)|A_BOLD|A_BLINK); 
 		    update_panels();
 		    doupdate();		sleep(2);
-		del_panel(par.chancepan);
-		delwin(par.playchance);
-		del_panel(par.bingcnt);
-		delwin(par.bingocnt);
+		del_panel(par->chancepan);
+		delwin(par->playchance);
+		del_panel(par->bingcnt);
+		delwin(par->bingocnt);
 
 		for(t1=0;t1<5;++t1)
 		    for(t2=0;t2<5;++t2)
 		    {
-			del_panel(par.pan[t1][t2]);
-			delwin(par.get.bingo[t1][t2]);
+			del_panel(par->pan[t1][t2]);
+			delwin(par->get.bingo[t1][t2]);
 		    }
 
 
-		    pthread_cancel(par->pid);
+		    pthread_cancel(par->getid);
 		    end_game_flag = 2;
 		    pthread_exit(NULL);
 
@@ -241,13 +241,14 @@ continue;
 	}
 
     }
+tr = par->get.pl.l.h;
 
-    end_game_flag=-1;
     err="No other player playing";
-    pthread_cancel(par->pid);
-    close(((player*)trav->d)->sd);
-    trav=trav->n;
-    for(;trav!=par->get.pl.l.h;trav=trav->n)
-	close(((player*)trav->d)->sd);
+    pthread_cancel(par->getid);
+    close(((player*)tr->d)->sd);
+    tr=tr->n;
+    for(;tr!=par->get.pl.l.h;tr=tr->n)
+	close(((player*)tr->d)->sd);
+    end_game_flag=-1;
     pthread_exit(err);
 }

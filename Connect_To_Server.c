@@ -5,7 +5,7 @@ void connect_to_server(char **err)
 {
     *err=NULL;
     end_game_flag=0;
-    int adl = sizeof(struct sockaddr),port_no;
+    int adl = sizeof(struct sockaddr_in),port_no;
     
     
     struct sockaddr_in ad;
@@ -30,7 +30,7 @@ void connect_to_server(char **err)
     box(ser_det,0,0);
 
 
-    if(par.sersd = socket(AF_INET,SOCK_STREAM,0)==-1)		//otherwise check for errno
+    if((par.sersd = socket(AF_INET,SOCK_STREAM,0))==-1)		//otherwise check for errno
 	{
 
 	*err = "Socket create error";
@@ -42,9 +42,6 @@ void connect_to_server(char **err)
 	}
 		echo();
 
-    bzero(&ad,sizeof(ad));
-    ad.sin_family=AF_INET;
-    ad.sin_addr.s_addr=inet_addr(MY_ADDR);
 
 	while(1)
 	{
@@ -64,8 +61,14 @@ void connect_to_server(char **err)
 		    refresh();
 		    return;
 		}
+    bzero(&ad,sizeof(ad));
+    ad.sin_family=AF_INET;
+    ad.sin_addr.s_addr=inet_addr(MY_ADDR);
     ad.sin_port=htons(port_no);   
-	    if((connect(par.sersd,ADCAST&ad,adl))!=0)
+
+    mvwprintw(ser_det,6,2,"PORT NUMBER : %d",port_no);
+
+	    if((connect(par.sersd,ADCAST &ad,adl))!=0)
 	    {
 		wattron(ser_det,COLOR_PAIR(4));
 	    mvwprintw(ser_det,15,2,"UNABLE TO CONNECT TO SERVER!!!");

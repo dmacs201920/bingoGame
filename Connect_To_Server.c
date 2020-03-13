@@ -228,7 +228,7 @@ void connect_to_server(char **err)
 
 
 
-    if(pthread_create(&par.pid,NULL,get_key_t,&par.get)<0)
+    if(pthread_create(&par.getid,NULL,get_key_t,&par.get)<0)
     {
 	close(par.sersd);
 
@@ -251,10 +251,10 @@ void connect_to_server(char **err)
 	return;
     }
 
-    if(pthread_create(&par.get.pid,NULL,client_game_t,&par)<0)
+    if(pthread_create(&par.get.gameid,NULL,client_game_t,&par)<0)
     {
 	close(par.sersd);
-	pthread_cancel(par.pid);
+	pthread_cancel(par.getid);
 
 	for(t1=0;t1<5;++t1)
 	    for(t2=0;t2<5;++t2)

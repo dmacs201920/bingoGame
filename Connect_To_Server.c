@@ -6,94 +6,94 @@ void connect_to_server(char **err)
     *err=NULL;
     end_game_flag=0;
     int adl = sizeof(struct sockaddr_in),port_no;
-    
-    
+
+
     struct sockaddr_in ad;
     //int port;
     game_p par;
 
-    
+
 
     curs_set(1);
     cbreak();
     WINDOW *ser_det = newwin(20,50,6,50);
-	if(ser_det==NULL)
-	{
+    if(ser_det==NULL)
+    {
 	*err = "ser_det window error";
 	delwin(ser_det);
 	clear();
 	refresh();
 	return;
 
-	}
+    }
 
     box(ser_det,0,0);
 
 
     if((par.sersd = socket(AF_INET,SOCK_STREAM,0))==-1)		//otherwise check for errno
-	{
+    {
 
 	*err = "Socket create error";
 	delwin(ser_det);
 	clear();
 	refresh();
 	return;
-		
-	}
-		echo();
 
-
-	while(1)
-	{
-
-    mvwprintw(ser_det,2,2,"USE ONLY BACKSPACE AND DIGITS!");
-    mvwprintw(ser_det,4,2,"ENTER PORT NUMBER(PRESS -1 TO EXIT):");
-
-    refresh();
-    wrefresh(ser_det);
-    wscanw(ser_det,"%d",&port_no);
-
-		if(port_no == -1)
-		{
-		    noecho();
-		    delwin(ser_det);
-		    clear();
-		    refresh();
-		    return;
-		}
+    }
+    echo();
     bzero(&ad,sizeof(ad));
     ad.sin_family=AF_INET;
     ad.sin_addr.s_addr=inet_addr(MY_ADDR);
-    ad.sin_port=htons(port_no);   
 
-    mvwprintw(ser_det,6,2,"PORT NUMBER : %d",port_no);
 
-	    if((connect(par.sersd,ADCAST &ad,adl))!=0)
-	    {
-		wattron(ser_det,COLOR_PAIR(4));
+    while(1)
+    {
+
+	mvwprintw(ser_det,2,2,"USE ONLY BACKSPACE AND DIGITS!");
+	mvwprintw(ser_det,4,2,"ENTER PORT NUMBER(PRESS -1 TO EXIT):");
+
+	refresh();
+	wrefresh(ser_det);
+	wscanw(ser_det,"%d",&port_no);
+
+	if(port_no == -1)
+	{
+	    noecho();
+	    delwin(ser_det);
+	    clear();
+	    refresh();
+	    return;
+	}
+	ad.sin_port=htons(port_no);   
+
+	mvwprintw(ser_det,6,2,"PORT NUMBER : %d",port_no);
+
+	if((connect(par.sersd,ADCAST &ad,adl))!=0)
+	{
+	    wattron(ser_det,COLOR_PAIR(4));
 	    mvwprintw(ser_det,15,2,"UNABLE TO CONNECT TO SERVER!!!");
-		wattroff(ser_det,COLOR_PAIR(4));
-		continue;
-	    }
+	    wattroff(ser_det,COLOR_PAIR(4));
+	    continue;
+	}
 
-	    break;
-	}		//while close
+	break;
+    }		//while close
 
     noecho();
 
     delwin(ser_det);
     clear();
     refresh();
-    
+
     curs_set(0);
     int startx = 7,starty = 60,row,col;
 
-    
-   for(int i=0;i<5;++i)
+
+    for(int i=0;i<5;++i)
     {
 	for(int j=0;j<5;++j)
 	{
-    	if(timed_recv(par.sersd,&par.get.array[i][j],sizeof(int),0,2)!=sizeof(int))
+	    if(timed_recv(par.sersd,&par.get.array[i][j],sizeof(int),0,2)!=sizeof(int))
 	    {
 		close(par.sersd);
 		*err = "Array recieve error";
@@ -103,7 +103,7 @@ void connect_to_server(char **err)
 	}
 
     }
- 
+
     par.get.x = par.get.y = par.get.p =  par.get.q = 0;
     pthread_mutex_init(&par.get.get_m,NULL);
     pthread_mutex_init(&par.get.done_mutex,NULL);
@@ -194,11 +194,11 @@ void connect_to_server(char **err)
 			delwin(par.get.bingo[i][j]);
 		for(t1=0;t1<=i;++t1)
 		    for(t2=0;t2<5;++t2)
-			{
-				if(t1==i&&t2==j)
-			 	   break;
-				del_panel(par.pan[t1][t2]);
-			}
+		    {
+			if(t1==i&&t2==j)
+			    break;
+			del_panel(par.pan[t1][t2]);
+		    }
 
 		*err="Unable to create PANEL";				//ERROR MSG
 		return;

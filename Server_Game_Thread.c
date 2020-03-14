@@ -59,7 +59,9 @@ void* serv_game_t(void* arg)
 			d.bng=((player*)tr->d)->bngcnt;
 			send(((player*)tr->d)->sd,&d,sizeof(data),0);
 		    }
+		Current_player = Current_player->n;
 	    }
+
 	    else
 	    {
 		tr=Current_player->n;
@@ -120,9 +122,13 @@ void* serv_game_t(void* arg)
 		    pthread_exit(NULL);
 
 		}
-	    }
-	}
+
+	    }//else close of flag!=1
+
+	}//if(current_player!=head ) close
+
 	wattron(par->playchance,COLOR_PAIR(2)|A_BOLD);
+	mvwprintw(par->playchance,1,1,"                                   ");
 	mvwprintw(par->playchance,1,1,"        OPPONENT %d IS PLAYING     ",((player*)Current_player->d)->plid);
 	wattron(par->playchance,COLOR_PAIR(2)|A_BOLD); 
 	update_panels();
@@ -176,6 +182,7 @@ void* serv_game_t(void* arg)
 		    d.bng=((player*)tr->d)->bngcnt;
 		    send(((player*)tr->d)->sd,&d,sizeof(data),0);
 		} 
+	    Current_player = Current_player->n;
 	}
 	else
 	{

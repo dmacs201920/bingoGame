@@ -9,7 +9,7 @@ void* serv_game_t(void* arg)
     node *Current_player=par->get.pl.l.h,*tr;
 
     int flag=0;
-    
+
     while(Current_player!=Current_player->n)
     {
 	if(Current_player==par->get.pl.l.h)
@@ -80,17 +80,17 @@ void* serv_game_t(void* arg)
 		    update_panels();
 		    doupdate();
 		    sleep(2);
-		del_panel(par->chancepan);
-		delwin(par->playchance);
-		del_panel(par->bingcnt);
-		delwin(par->bingocnt);
+		    del_panel(par->chancepan);
+		    delwin(par->playchance);
+		    del_panel(par->bingcnt);
+		    delwin(par->bingocnt);
 
-		for(t1=0;t1<5;++t1)
-		    for(t2=0;t2<5;++t2)
-		    {
-			del_panel(par->pan[t1][t2]);
-			delwin(par->get.bingo[t1][t2]);
-		    }
+		    for(t1=0;t1<5;++t1)
+			for(t2=0;t2<5;++t2)
+			{
+			    del_panel(par->pan[t1][t2]);
+			    delwin(par->get.bingo[t1][t2]);
+			}
 
 		    pthread_cancel(par->getid);
 		    end_game_flag = 1;
@@ -103,17 +103,17 @@ void* serv_game_t(void* arg)
 		    wattroff(par->playchance,COLOR_PAIR(2)|A_BOLD|A_BLINK); 
 		    update_panels();
 		    doupdate();		sleep(2);
-		del_panel(par->chancepan);
-		delwin(par->playchance);
-		del_panel(par->bingcnt);
-		delwin(par->bingocnt);
+		    del_panel(par->chancepan);
+		    delwin(par->playchance);
+		    del_panel(par->bingcnt);
+		    delwin(par->bingocnt);
 
-		for(t1=0;t1<5;++t1)
-		    for(t2=0;t2<5;++t2)
-		    {
-			del_panel(par->pan[t1][t2]);
-			delwin(par->get.bingo[t1][t2]);
-		    }
+		    for(t1=0;t1<5;++t1)
+			for(t2=0;t2<5;++t2)
+			{
+			    del_panel(par->pan[t1][t2]);
+			    delwin(par->get.bingo[t1][t2]);
+			}
 
 		    pthread_cancel(par->getid);
 		    end_game_flag = 2;
@@ -122,24 +122,24 @@ void* serv_game_t(void* arg)
 		}
 	    }
 	}
-	    wattron(par->playchance,COLOR_PAIR(2)|A_BOLD);
-	    mvwprintw(par->playchance,1,1,"        OPPONENT %d IS PLAYING     ",((player*)Current_player->d)->plid);
-	    wattron(par->playchance,COLOR_PAIR(2)|A_BOLD); 
-	    update_panels();
-	    doupdate();
+	wattron(par->playchance,COLOR_PAIR(2)|A_BOLD);
+	mvwprintw(par->playchance,1,1,"        OPPONENT %d IS PLAYING     ",((player*)Current_player->d)->plid);
+	wattron(par->playchance,COLOR_PAIR(2)|A_BOLD); 
+	update_panels();
+	doupdate();
 
 	if((status=timed_recv(((player*)Current_player)->sd,&d,sizeof(data),0,10))!=sizeof(data)&&status!=-1)
 	{
-		tr = Current_player->n;
+	    tr = Current_player->n;
 	    close(((player*)Current_player->d)->sd);
-		--(par->get.pl.n);
-		Current_player->n->p = Current_player->p;
-		Current_player->p->n = Current_player->n;
-		free(Current_player->d);
-		free(Current_player);
+	    --(par->get.pl.n);
+	    Current_player->n->p = Current_player->p;
+	    Current_player->p->n = Current_player->n;
+	    free(Current_player->d);
+	    free(Current_player);
 
-Current_player = tr;
-continue;
+	    Current_player = tr;
+	    continue;
 
 	}
 	else if(status==-1)
@@ -158,8 +158,8 @@ continue;
 
 	    }while(tr!=Current_player);
 
-	print_array(par->get.bingo,((player*)par->get.pl.l.h->d)->array,par->get.x,par->get.y);
-	bingodisp(par->bingocnt,((player*)par->get.pl.l.h->d)->bngcnt);
+	    print_array(par->get.bingo,((player*)par->get.pl.l.h->d)->array,par->get.x,par->get.y);
+	    bingodisp(par->bingocnt,((player*)par->get.pl.l.h->d)->bngcnt);
 	}
 	if(flag!=1)
 	{
@@ -187,14 +187,14 @@ continue;
 		    d.bng=((player*)tr->d)->bngcnt;
 		    send(((player*)tr->d)->sd,&d,sizeof(data),0);
 		}
-		if(((player*)par->get.pl.l.h->d)->bngcnt>4)
-		{
-		    wattron(par->playchance,COLOR_PAIR(2)|A_BOLD|A_BLINK);
-		    mvwprintw(par->playchance,1,1,"       YOU WON!!!!!        ");
-		    wattroff(par->playchance,COLOR_PAIR(2)|A_BOLD|A_BLINK); 
-		    update_panels();
-		    doupdate();
-		    sleep(2);
+	    if(((player*)par->get.pl.l.h->d)->bngcnt>4)
+	    {
+		wattron(par->playchance,COLOR_PAIR(2)|A_BOLD|A_BLINK);
+		mvwprintw(par->playchance,1,1,"       YOU WON!!!!!        ");
+		wattroff(par->playchance,COLOR_PAIR(2)|A_BOLD|A_BLINK); 
+		update_panels();
+		doupdate();
+		sleep(2);
 		del_panel(par->chancepan);
 		delwin(par->playchance);
 		del_panel(par->bingcnt);
@@ -207,19 +207,19 @@ continue;
 			delwin(par->get.bingo[t1][t2]);
 		    }
 
-		    pthread_cancel(par->getid);
-		    end_game_flag = 1;
-		    pthread_exit(NULL);
+		pthread_cancel(par->getid);
+		end_game_flag = 1;
+		pthread_exit(NULL);
 
-		}
+	    }
 
-		else
-		{
-		    wattron(par->playchance,COLOR_PAIR(2)|A_BOLD|A_BLINK);
-		    mvwprintw(par->playchance,1,1,"       YOU LOST           ");
-		    wattroff(par->playchance,COLOR_PAIR(2)|A_BOLD|A_BLINK); 
-		    update_panels();
-		    doupdate();		sleep(2);
+	    else
+	    {
+		wattron(par->playchance,COLOR_PAIR(2)|A_BOLD|A_BLINK);
+		mvwprintw(par->playchance,1,1,"       YOU LOST           ");
+		wattroff(par->playchance,COLOR_PAIR(2)|A_BOLD|A_BLINK); 
+		update_panels();
+		doupdate();		sleep(2);
 		del_panel(par->chancepan);
 		delwin(par->playchance);
 		del_panel(par->bingcnt);
@@ -233,15 +233,15 @@ continue;
 		    }
 
 
-		    pthread_cancel(par->getid);
-		    end_game_flag = 2;
-		    pthread_exit(NULL);
+		pthread_cancel(par->getid);
+		end_game_flag = 2;
+		pthread_exit(NULL);
 
-		}
+	    }
 	}
 
     }
-tr = par->get.pl.l.h;
+    tr = par->get.pl.l.h;
 
     err="No other player playing";
     pthread_cancel(par->getid);

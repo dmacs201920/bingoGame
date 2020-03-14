@@ -66,7 +66,7 @@ void main()
 			clear();
 			refresh();
 			break;
-		case 1:
+		    case 1:
 			clear();
 			refresh();
 			start_server(&err);

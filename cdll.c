@@ -87,21 +87,21 @@ void delnode(cdll *l,int pos)
     if(t==NULL)
 	return;
 
-   do 
-   {
-       if(i==pos)
-       {
-	   t->p->n=t->n;
-	   t->n->p=t->p;
-	   if(t==l->h)
-	       l->h=t->n;
-	   free(t->d);
-	   free(t);
-	   return;
-       }
-       ++i;
-       t=t->n;
-   }while(t!=l->h);
+    do 
+    {
+	if(i==pos)
+	{
+	    t->p->n=t->n;
+	    t->n->p=t->p;
+	    if(t==l->h)
+		l->h=t->n;
+	    free(t->d);
+	    free(t);
+	    return;
+	}
+	++i;
+	t=t->n;
+    }while(t!=l->h);
 }
 
 void freecdll(cdll list)
@@ -212,25 +212,25 @@ int insorder(cdll *l,void* data,char order)
 	t->p=temp;
 	return 1;
     }
-	do
+    do
+    {
+	if(l->cmp(t->d,data)<0)
 	{
-	    if(l->cmp(t->d,data)<0)
-	    {
-		temp->n=t;
-		temp->p=t->p;
-		t->p->n=temp;
-		t->p=temp;
-		if(t==l->h)
-		    l->h=temp;
-		return 1;
-	    }
-	    t=t->n;
-	}while(t!=l->h);
-	temp->n=t;
-	temp->p=t->p;
-	t->p->n=temp;
-	t->p=temp;
-	return 1;
+	    temp->n=t;
+	    temp->p=t->p;
+	    t->p->n=temp;
+	    t->p=temp;
+	    if(t==l->h)
+		l->h=temp;
+	    return 1;
+	}
+	t=t->n;
+    }while(t!=l->h);
+    temp->n=t;
+    temp->p=t->p;
+    t->p->n=temp;
+    t->p=temp;
+    return 1;
 }
 
 void rotatecdll(cdll* l,int x)

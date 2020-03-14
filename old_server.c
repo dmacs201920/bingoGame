@@ -27,10 +27,10 @@ int main(int ac, char **ar){
     data d;
     d.com=0;
     if((newSocket= accept(welcomeSocket, (struct sockaddr *) &serverStorage, &addr_size))<0)
-	{
-	    perror("accept");
-	    exit(1);
-	}
+    {
+	perror("accept");
+	exit(1);
+    }
     int i,j;
     for(i=0;i<5;++i)
 	for(j=0;j<5;++j)
@@ -51,24 +51,24 @@ int main(int ac, char **ar){
 	{
 	    if(read(newSocket,&d,sizeof(data))>0)
 		printf("\n%c %d\n",d.com,d.num);
-		else
-		{
-			close(newSocket);
-			perror("read");
-			exit(1);
-		}
+	    else
+	    {
+		close(newSocket);
+		perror("read");
+		exit(1);
+	    }
 	}
 	else{
 	    printf("\nChar,num,bingos,opponent: ");
 	    scanf("%c%*c%d%*c%d%*c%d",&d.com,&d.num,&d.bng,&d.opp);
-		getchar();
+	    getchar();
 	    if(write(newSocket,&d,sizeof(data))==sizeof(data));	
-		else
-		{
-			close(newSocket);
-			perror("write");
-			exit(1);
-		}
+	    else
+	    {
+		close(newSocket);
+		perror("write");
+		exit(1);
+	    }
 	}
 
     }

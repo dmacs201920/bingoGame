@@ -108,11 +108,11 @@ void vs_comp(char **err)
 			delwin(bingo[i][j]);
 		for(t1=0;t1<=i;++t1)
 		    for(t2=0;t2<5;++t2)
-			{
-				if(t1==i&&t2==j)
-			 	   break;
-				del_panel(pan[t1][t2]);
-			}
+		    {
+			if(t1==i&&t2==j)
+			    break;
+			del_panel(pan[t1][t2]);
+		    }
 
 		*err="Unable to create PANEL";				//ERROR MSG
 		//	pthread_mutex_destoy(&m);
@@ -153,16 +153,16 @@ void vs_comp(char **err)
 	doupdate();
 	if(get_key(bingo,&x,&y,player)==1)			//GETS READY FOR INPUT FORM USER
 	{
-    for(i=0;i<5;++i)
-	for(j=0;j<5;++j)
-	{
-	    del_panel(pan[i][j]);
-	    delwin(bingo[i][j]);
-	}
-    del_panel(chancepan);
-    delwin(playchance);
-    del_panel(bingcnt);
-    delwin(bingocnt);
+	    for(i=0;i<5;++i)
+		for(j=0;j<5;++j)
+		{
+		    del_panel(pan[i][j]);
+		    delwin(bingo[i][j]);
+		}
+	    del_panel(chancepan);
+	    delwin(playchance);
+	    del_panel(bingcnt);
+	    delwin(bingocnt);
 	    return;
 	}
 	search_strike(comp,player[x][y],&i,&j);			//STRIKES THE NUMBER FOR COMPUTER GIVEN FROM THE USER
@@ -176,16 +176,16 @@ void vs_comp(char **err)
 	    doupdate();
 	    sleep(2);
 
-    for(i=0;i<5;++i)
-	for(j=0;j<5;++j)
-	{
-	    del_panel(pan[i][j]);
-	    delwin(bingo[i][j]);
-	}
-    del_panel(chancepan);
-    delwin(playchance);
-    del_panel(bingcnt);
-    delwin(bingocnt);
+	    for(i=0;i<5;++i)
+		for(j=0;j<5;++j)
+		{
+		    del_panel(pan[i][j]);
+		    delwin(bingo[i][j]);
+		}
+	    del_panel(chancepan);
+	    delwin(playchance);
+	    del_panel(bingcnt);
+	    delwin(bingocnt);
 	    return;
 	}
 	bingodisp(bingocnt,player_bingo);
@@ -212,16 +212,16 @@ void vs_comp(char **err)
 	    update_panels();
 	    doupdate();
 	    sleep(2);
-    for(i=0;i<5;++i)
-	for(j=0;j<5;++j)
-	{
-	    del_panel(pan[i][j]);
-	    delwin(bingo[i][j]);
-	}
-    del_panel(chancepan);
-    delwin(playchance);
-    del_panel(bingcnt);
-    delwin(bingocnt);
+	    for(i=0;i<5;++i)
+		for(j=0;j<5;++j)
+		{
+		    del_panel(pan[i][j]);
+		    delwin(bingo[i][j]);
+		}
+	    del_panel(chancepan);
+	    delwin(playchance);
+	    del_panel(bingcnt);
+	    delwin(bingocnt);
 	    return;
 	}
 	if(i!=x||j!=y)

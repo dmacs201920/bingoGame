@@ -54,11 +54,13 @@ void connect_to_server(char **err)
 
 	refresh();
 	wrefresh(ser_det);
-	wscanw(ser_det,"%d",&port_no);
+	mvwprintw(ser_det,6,5,"         ");
+	mvwscanw(ser_det,6,5,"%d",&port_no);
 
 	if(port_no == -1)
 	{
 	    noecho();
+	    curs_set(0);
 	    delwin(ser_det);
 	    clear();
 	    refresh();
@@ -66,7 +68,7 @@ void connect_to_server(char **err)
 	}
 	ad.sin_port=htons(port_no);   
 
-	mvwprintw(ser_det,6,2,"PORT NUMBER : %d",port_no);
+	mvwprintw(ser_det,10,2,"PORT NUMBER : %d",port_no);
 
 	if((connect(par.sersd,ADCAST &ad,adl))!=0)
 	{

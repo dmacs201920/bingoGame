@@ -4,9 +4,9 @@ void* get_key_t(void *arg)
 {
 
     getkey_p *par=arg;
-print_array(par->bingo,par->array,(par->x),(par->y));
+    print_array(par->bingo,par->array,(par->x),(par->y));
     int ch,f;
-    
+
     while(ch=getch())
     {
 	switch(ch)
@@ -20,29 +20,29 @@ print_array(par->bingo,par->array,(par->x),(par->y));
 
 		--(par->x);
 		if((par->x)<0)
-		(par->x) = 4;
+		    (par->x) = 4;
 
-	
+
 		break;
 
 	    case KEY_DOWN:
-		
+
 		++(par->x);
 		if((par->x)>4)
-		(par->x) = 0;
-				break;
+		    (par->x) = 0;
+		break;
 
 	    case KEY_LEFT:
-		
+
 		--(par->y);
 		if((par->y)<0)
-		(par->y) = 4;
+		    (par->y) = 4;
 		break;
 
 	    case KEY_RIGHT:
 		++(par->y);
 		if((par->y)>4)
-		(par->y) = 0;
+		    (par->y) = 0;
 		break;
 
 	    case 10:

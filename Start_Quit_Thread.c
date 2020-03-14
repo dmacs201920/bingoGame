@@ -14,7 +14,7 @@ void* startquit(void* arg)
 		conf->status=1;
 		break;
 	    case 'q':
-		conf->status=-1;
+		conf->status=-2;
 	}
     }
     pthread_mutex_lock(&conf->pl->lock);

@@ -42,12 +42,12 @@ void* client_game_t(void *arg)
 		if(posx==-1)
 		{
 		    //NUMBER INVALID
-			goto invalid;
+		    goto invalid;
 		}
 		par->get.array[posx][posy] = 0;
 		//	player_bingo+=bingos(par->get.array,posx,posy);
 		bingodisp(par->bingocnt,d.bng);		//to display no of bingos completed
-	
+
 
 
 		if(posx==par->get.x&&posy==par->get.y)
@@ -67,7 +67,7 @@ void* client_game_t(void *arg)
 
 
 	    }//d.num!=0 if close
-	invalid:
+invalid:
 	    //strike the number on the screen (ncurses)
 
 	    if(d.com=='y')
@@ -87,7 +87,7 @@ void* client_game_t(void *arg)
 		pthread_mutex_unlock(&par->get.get_m);
 		if(timedwait_cond(&par->get.done,&par->get.done_mutex,10)==0)
 		{
-		pthread_mutex_lock(&par->get.get_m);
+		    pthread_mutex_lock(&par->get.get_m);
 		    // sleep(1);
 		    // if(par->get.done==1)		//number received
 		    // {
@@ -125,7 +125,7 @@ void* client_game_t(void *arg)
 		doupdate();
 	    }//d.com==y if close
 
-		pthread_mutex_trylock(&par->get.get_m);
+	    pthread_mutex_trylock(&par->get.get_m);
 
 	    if(d.com=='t')
 	    {

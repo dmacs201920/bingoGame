@@ -32,7 +32,7 @@ int timed_recv(int sd,void* data,int size,int flags,int sec)
     {
 	return -1;
     }
-    
+
     if(pthread_create(&par.tmrt,NULL,timer_2,&par)!=0)
     {
 	pthread_cancel(par.recvt);

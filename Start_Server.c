@@ -16,19 +16,20 @@ extern int end_game_flag;
 
 void start_server(char **err)
 {
-    int counter,port_no = 6000;
+    int i,j,t1,t2,counter,port_no = 6000;
     end_game_flag=0;
     game_p par;
+    par.get.x=par.get.y=par.get.p=par.get.q=0;
     par.get.pl.n=1;
     player p;
     pthread_mutex_init(&par.get.pl.lock,NULL);
-    fill_bingo(p.array);
-
-
+    pthread_mutex_init(&par.get.done_mutex,NULL);
+    pthread_cond_init(&par.get.done,NULL);
+    fill_bingo(par.get.array);
     p.adl=sizeof(p.ad);
     init(&par.get.pl.l,sizeof(player),cmp,NULL,cpy);
 
-    if((p.sd=socket(AF_INET,SOCK_STREAM,0))<0)
+    if((par.sersd=p.sd=socket(AF_INET,SOCK_STREAM,0))<0)
     {
 	*err="Unable to open stream socket";
 	return;
@@ -102,9 +103,18 @@ void start_server(char **err)
     delwin(conf.w);
     clear();
     refresh();
-    pthread_join(conf.acct,(void**)err);
-    if(conf.status==-1)
+    node* temp=conf.pl->l.h;
+    i=-1;
+    do
     {
+	((player*)temp->d)->plid=++i;
+	pthread_cancel(((player*)temp->d)->tid);
+	temp=temp->n;
+    }while(temp!=conf.pl->l.h);
+    if(conf.status<1)
+    {
+	if(conf.status==-1)
+	    pthread_join(conf.acct,(void**)err);
 	close(p.sd);
 	return;
     }
@@ -158,7 +168,6 @@ void start_server(char **err)
 
     ////////////////////////////////////////////////////		CREATING BINGO WINDOWS AND PANELS    
 
-    int i,j,t1,t2;
 
     for(i=0;i<5;i++)
     {

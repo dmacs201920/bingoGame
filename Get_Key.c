@@ -26,7 +26,7 @@ int get_key(WINDOW *bingo[5][5],int *x,int *y,int array[5][5])
 
 		--*x;
 		if(*x<0)
-			*x=4;
+		    *x=4;
 		if(array[*x][*y]==0)
 		{
 		    wattron(bingo[*x][*y],A_BOLD|A_STANDOUT|COLOR_PAIR(9));
@@ -41,11 +41,11 @@ int get_key(WINDOW *bingo[5][5],int *x,int *y,int array[5][5])
 		}
 
 
-	
+
 		break;
 
 	    case KEY_DOWN:
-		
+
 		if(array[*x][*y]==0)
 		{
 		    wattron(bingo[*x][*y],A_BOLD|COLOR_PAIR(9));
@@ -61,7 +61,7 @@ int get_key(WINDOW *bingo[5][5],int *x,int *y,int array[5][5])
 
 		++*x;
 		if(*x>4)
-			*x=0;
+		    *x=0;
 		if(array[*x][*y]==0)
 		{
 		    wattron(bingo[*x][*y],A_BOLD|A_STANDOUT|COLOR_PAIR(9));
@@ -76,10 +76,10 @@ int get_key(WINDOW *bingo[5][5],int *x,int *y,int array[5][5])
 		}
 
 
-				break;
+		break;
 
 	    case KEY_LEFT:
-		
+
 		if(array[*x][*y]==0)
 		{
 		    wattron(bingo[*x][*y],A_BOLD|COLOR_PAIR(9));
@@ -95,7 +95,7 @@ int get_key(WINDOW *bingo[5][5],int *x,int *y,int array[5][5])
 
 		--*y;
 		if(*y<0)
-			*y=4;
+		    *y=4;
 		if(array[*x][*y]==0)
 		{
 		    wattron(bingo[*x][*y],A_BOLD|A_STANDOUT|COLOR_PAIR(9));
@@ -113,7 +113,7 @@ int get_key(WINDOW *bingo[5][5],int *x,int *y,int array[5][5])
 		break;
 
 	    case KEY_RIGHT:
-			if(array[*x][*y]==0)
+		if(array[*x][*y]==0)
 		{
 		    wattron(bingo[*x][*y],A_BOLD|COLOR_PAIR(9));
 		    mvwprintw(bingo[*x][*y],2,3,"X ");
@@ -128,7 +128,7 @@ int get_key(WINDOW *bingo[5][5],int *x,int *y,int array[5][5])
 
 		++*y;
 		if(*y>4)
-			*y=0;
+		    *y=0;
 		if(array[*x][*y]==0)
 		{
 		    wattron(bingo[*x][*y],A_BOLD|A_STANDOUT|COLOR_PAIR(9));

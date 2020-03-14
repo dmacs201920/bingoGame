@@ -44,16 +44,16 @@ typedef struct
     pthread_t tmrt,recvt;
 }recv_p;
 
-	/************  Used as parameter inside timed recv function*********
-	   sd		-	Socket discriptor.
-	   status	-	Return of recv.
-	   size		-	Size of data to send.
-	   flags	-	recv function flags argument
-	   sec		-	Number of seconds to wait.
-	   data		-	Pointer of the data to send.
-	   tmrt		-	Thread id of timer thread.
-	   recvt	-	Thread id of the recv thread.
-	*/
+/************  Used as parameter inside timed recv function*********
+  sd		-	Socket discriptor.
+  status	-	Return of recv.
+  size		-	Size of data to send.
+  flags	-	recv function flags argument
+  sec		-	Number of seconds to wait.
+  data		-	Pointer of the data to send.
+  tmrt		-	Thread id of timer thread.
+  recvt	-	Thread id of the recv thread.
+ */
 
 typedef struct
 {
@@ -66,51 +66,51 @@ typedef struct
     pthread_cond_t done;
 }getkey_p;
 
-	/*********  Used as parameter for get_key thread ************
-	  pl		-	Contains the list of all players
-	  x & y		-	For knowing current highlighted position in the grid.
-	  p & q		-	For putting the selected number's position from the grid.
-	  bingo		-	For creating the bingo grid.
-	  pid		-	The thread id to cancel when the user quits.
-	  get_m		-	Mutex for letting get_key know whether to accept a selected number or not.
-	  done_mutex	-	To notify the game thread whether the data that was asked is available or not.
-	  done		-	For sending signal from get_key when the data asked for is availabe.
-	*/
+/*********  Used as parameter for get_key thread ************
+  pl		-	Contains the list of all players
+  x & y		-	For knowing current highlighted position in the grid.
+  p & q		-	For putting the selected number's position from the grid.
+  bingo		-	For creating the bingo grid.
+  pid		-	The thread id to cancel when the user quits.
+  get_m		-	Mutex for letting get_key know whether to accept a selected number or not.
+  done_mutex	-	To notify the game thread whether the data that was asked is available or not.
+  done		-	For sending signal from get_key when the data asked for is availabe.
+ */
 
 typedef struct
 {
     int sd;
     int plid;
-	pthread_t tid;
+    pthread_t tid;
     struct sockaddr_in ad;
     int array[5][5];
     int adl;
     int bngcnt;
 }player;
 
-	/********** Used as data for circular double linked list *********
-	  sd		-	Socket discriptor for that player's client program.
-	  plid		-	Player id.
-	  tid		-	Confirmation thread's id. This thread will run right after accepting connection till game starts to remove the
-	  			player from the list if the player leaves.
-	  ad		-	Address of the player's client program.
-	  array		-	That player's bingo grid.
-	  adl		-	The player's client program's address length.
-	  bngcnt	-	Player's Client program's bingo count.
-	*/
+/********** Used as data for circular double linked list *********
+  sd		-	Socket discriptor for that player's client program.
+  plid		-	Player id.
+  tid		-	Confirmation thread's id. This thread will run right after accepting connection till game starts to remove the
+  player from the list if the player leaves.
+  ad		-	Address of the player's client program.
+  array		-	That player's bingo grid.
+  adl		-	The player's client program's address length.
+  bngcnt	-	Player's Client program's bingo count.
+ */
 
 typedef struct
 {
     playerlist *pl;
-	node* p;
-  	WINDOW *w;
-  	  PANEL *pan;
-   	 int status;
-	 pthread_t sqt,acct;
+    node* p;
+    WINDOW *w;
+    PANEL *pan;
+    int status;
+    pthread_t sqt,acct;
 }conf_p;
-	/*
-	   
-	 */
+/*
+
+ */
 
 typedef struct
 {

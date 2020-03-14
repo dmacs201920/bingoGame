@@ -66,15 +66,13 @@ void start_server(char **err)
     insertl(&par.get.pl.l,&p,0);
     conf_p conf;
     conf.status=0;
-    conf.lock=&par.get.pl.lock;
-    conf.n=&par.get.pl.n;
     conf.pl=&par.get.pl;
     if(( conf.w = newwin(15,45,10,40))==NULL)
-   {
-       close(p.sd);
-       *err="Unable to create WINDOW";
-       return;
-   }
+    {
+	close(p.sd);
+	*err="Unable to create WINDOW";
+	return;
+    }
     if((conf.pan= new_panel(conf.w))==NULL)
     {
 	delwin(conf.w);
@@ -90,7 +88,7 @@ void start_server(char **err)
 	*err="Unable to create accept pthread";
 	return;
     }
-    
+
     if(pthread_create(&conf.sqt,NULL,startquit,&conf)!=0)
     {
 	close(p.sd);

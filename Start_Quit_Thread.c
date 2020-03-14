@@ -9,7 +9,7 @@ void* startquit(void* arg)
 	switch(c)
 	{
 	    case '\n':
-		if(*(conf->n)==1)
+		if(conf->pl->n==1)
 		    continue;
 		conf->status=1;
 		break;
@@ -17,8 +17,8 @@ void* startquit(void* arg)
 		conf->status=-1;
 	}
     }
-    pthread_mutex_lock(conf->lock);
+    pthread_mutex_lock(&conf->pl->lock);
     pthread_cancel(conf->acct);
-    pthread_mutex_unlock(conf->lock);
+    pthread_mutex_unlock(&conf->pl->lock);
     pthread_exit(NULL);
 }

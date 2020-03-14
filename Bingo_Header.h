@@ -103,10 +103,9 @@ typedef struct
 {
     playerlist *pl;
 	node* p;
-	pthread_mutex_t *lock;
-  	  WINDOW *w;
+  	WINDOW *w;
   	  PANEL *pan;
-   	 int *n,status;
+   	 int status;
 	 pthread_t sqt,acct;
 }conf_p;
 	/*
@@ -164,7 +163,7 @@ void* serv_game_t(void* arg);
 void* startquit(void* arg);
 void* get_key_t(void* arg);
 void* confirm_t(void*);
-void* cleanup_t(void*);
+void cleanup_t(void*);
 void connect_to_server(char **err);
 void* client_game(void* arg);
 void server_started_screen(WINDOW *w,PANEL *pan,struct sockaddr_in addr,int n);

@@ -21,33 +21,27 @@ void* serv_game_t(void* arg)
 	    update_panels();
 	    doupdate();
 	    pthread_mutex_unlock(&par->get.get_m);
-	    printw("Entering Timed Wait");
-	    refresh();
 	    if(timedwait_cond(&par->get.done,&par->get.done_mutex,10)==0)
 	    {
 		tr = Current_player;
-	    printw("In Timed Wait");
-	    refresh();
 		pthread_mutex_lock(&par->get.get_m);
 		d.num=par->get.array[par->get.p][par->get.q];
-	    printw("d.num = %d",d.num);
-	    refresh();
 		do
 		{
-			if(tr == par->get.pl.l.h)
-			{
-				par->get.array[par->get.p][par->get.q] = 0;
-		    		if((((player*)tr->d)->bngcnt+=bingos(par->get.array,i,j))>4)
-				    flag=1;
+		    if(tr == par->get.pl.l.h)
+		    {
+			par->get.array[par->get.p][par->get.q] = 0;
+			if((((player*)tr->d)->bngcnt+=bingos(par->get.array,i,j))>4)
+			    flag=1;
 
-			}
-			else
-			{
-			    search_strike(((player*)tr->d)->array,d.num,&i,&j);
-			    ((player*)tr->d)->array[i][j] = 0;
-			    if((((player*)tr->d)->bngcnt+=bingos(((player*)tr->d)->array,i,j))>4)
-				flag=1;
-			}
+		    }
+		    else
+		    {
+			search_strike(((player*)tr->d)->array,d.num,&i,&j);
+			((player*)tr->d)->array[i][j] = 0;
+			if((((player*)tr->d)->bngcnt+=bingos(((player*)tr->d)->array,i,j))>4)
+			    flag=1;
+		    }
 
 		    tr = tr->n;
 
@@ -75,10 +69,7 @@ void* serv_game_t(void* arg)
 			d.bng=((player*)tr->d)->bngcnt;
 			send(((player*)tr->d)->sd,&d,sizeof(data),0);
 		    }
-
-printw("Data sent to all players");
-refresh();
-sleep(1);
+		Current_player = Current_player->n;
 	    }
 
 	    else
@@ -146,24 +137,16 @@ sleep(1);
 
 	}//if(current_player!=head ) close
 
-	Current_player = Current_player->n;
 	wattron(par->playchance,COLOR_PAIR(2)|A_BOLD);
 	mvwprintw(par->playchance,1,1,"                                   ");
 	mvwprintw(par->playchance,1,1,"        OPPONENT %d IS PLAYING     ",((player*)Current_player->d)->plid);
 	wattron(par->playchance,COLOR_PAIR(2)|A_BOLD); 
 	update_panels();
 	doupdate();
-	printw("recieving");
-	refresh();
-sleep(1);
-//	if((status=timed_recv(((player*)Current_player)->sd,&d,sizeof(data),0,10))!=sizeof(data))
-	if((status=read(((player*)Current_player)->sd,&d,sizeof(data)))!=sizeof(data))
+	if((status=timed_recv(((player*)Current_player)->sd,&d,sizeof(data),0,10))!=sizeof(data))
 	{
 	    if(status!=-3)
 	    {
-		printw("client closed");
-		refresh();
-		sleep(1);
 		tr = Current_player->n;
 		close(((player*)Current_player->d)->sd);
 		--(par->get.pl.n);
@@ -178,36 +161,31 @@ sleep(1);
 	}
 	else if(status==-3)
 	{
-	    printw("client no play");
-	    refresh();
-	    sleep(1);
 	    d.num=0;
 	}
 
 	else
 	{	
-printw("client played");
-refresh();
 	    tr = Current_player;
 	    do
 	    {
-			if(tr == par->get.pl.l.h)
-			{
-			    search_strike(par->get.array,par->get.array[par->get.p][par->get.q],&i,&j);
-		    		if((((player*)tr->d)->bngcnt+=bingos(par->get.array,i,j))>4)
-				    flag=1;
+		if(tr == par->get.pl.l.h)
+		{
+		    search_strike(par->get.array,par->get.array[par->get.p][par->get.q],&i,&j);
+		    if((((player*)tr->d)->bngcnt+=bingos(par->get.array,i,j))>4)
+			flag=1;
 
-			}
-			else
-			{
-			    search_strike(((player*)tr->d)->array,par->get.array[par->get.p][par->get.q],&i,&j);
-			    if((((player*)tr->d)->bngcnt+=bingos(((player*)tr->d)->array,i,j))>4)
-				flag=1;
-			}
+		}
+		else
+		{
+		    search_strike(((player*)tr->d)->array,par->get.array[par->get.p][par->get.q],&i,&j);
+		    if((((player*)tr->d)->bngcnt+=bingos(((player*)tr->d)->array,i,j))>4)
+			flag=1;
+		}
 
 	    }while(tr!=Current_player);
-		print_array(par->get.bingo,par->get.array,par->get.x,par->get.y);
-		bingodisp(par->bingocnt,((player*)par->get.pl.l.h->d)->bngcnt);
+	    print_array(par->get.bingo,par->get.array,par->get.x,par->get.y);
+	    bingodisp(par->bingocnt,((player*)par->get.pl.l.h->d)->bngcnt);
 	}
 
 	if(flag!=1)
@@ -225,8 +203,7 @@ refresh();
 		    d.bng=((player*)tr->d)->bngcnt;
 		    send(((player*)tr->d)->sd,&d,sizeof(data),0);
 		}
-printw("Data sent to all players");
-refresh();
+	    Current_player = Current_player->n;
 
 	}
 	else
@@ -292,7 +269,7 @@ refresh();
 	    }
 	}
 
-	    Current_player = Current_player->n;
+	Current_player = Current_player->n;
     }
     tr = par->get.pl.l.h;
 

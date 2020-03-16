@@ -20,7 +20,6 @@ void* accept_t(void* arg)
 	    pl->status=-1;
 	    pthread_exit("Unable to accept connction");
 	}
-
 	pthread_mutex_lock(&pl->pl->lock);
 	insertl(&pl->pl->l,&p,1);
 	pl->p=pl->pl->l.h->n;
@@ -42,12 +41,12 @@ void* accept_t(void* arg)
 		    break;
 		}
 	    }
-		if(flag)
-		    break;
-		
+	    if(flag)
+		break;
+
 	}
-		if(flag)
-		    continue;
+	if(flag)
+	    continue;
 
 	if(pthread_create(&pnt->tid,NULL,confirm_t,arg)!=0)
 	{

@@ -102,7 +102,7 @@ void start_server(char **err)
 	sleep(0.2);
     del_panel(conf.pan);
     delwin(conf.w);
-    node* temp=conf.pl->l.h;
+    node* temp=conf.pl->l.h->n;
     i=-1;
     do
     {

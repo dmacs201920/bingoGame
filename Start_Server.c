@@ -102,8 +102,6 @@ void start_server(char **err)
 	sleep(0.2);
     del_panel(conf.pan);
     delwin(conf.w);
-    clear();
-    refresh();
     node* temp=conf.pl->l.h;
     i=-1;
     do
@@ -119,6 +117,8 @@ void start_server(char **err)
 	close(p.sd);
 	return;
     }
+    clear();
+    refresh();
     //print screen
     int startx = 7,starty = 60,row,col;
     par.playchance = newwin(3,120,3,starty);		//CREATES THE WINDOW AND RETURNS A POINTER TO THE PLAYCHANCE

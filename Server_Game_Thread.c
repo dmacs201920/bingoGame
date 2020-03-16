@@ -68,15 +68,17 @@ void* serv_game_t(void* arg)
 		d.opp=((player*)tr->d)->plid;
 		d.bng=((player*)tr->d)->bngcnt;
 		send(((player*)tr->d)->sd,&d,sizeof(data),0);
-		tr=tr->n;
 		d.com='n';
-		for(;tr!=Current_player->n;tr=tr->n)
+		for(tr=tr->n;tr!=Current_player->n;tr=tr->n)
 		    if(tr!=par->get.pl.l.h)
 		    {
 			d.bng=((player*)tr->d)->bngcnt;
 			send(((player*)tr->d)->sd,&d,sizeof(data),0);
 		    }
-		Current_player = Current_player->n;
+
+printw("Data sent to all players");
+refresh();
+sleep(1);
 	    }
 
 	    else
@@ -144,6 +146,7 @@ void* serv_game_t(void* arg)
 
 	}//if(current_player!=head ) close
 
+	Current_player = Current_player->n;
 	wattron(par->playchance,COLOR_PAIR(2)|A_BOLD);
 	mvwprintw(par->playchance,1,1,"                                   ");
 	mvwprintw(par->playchance,1,1,"        OPPONENT %d IS PLAYING     ",((player*)Current_player->d)->plid);
@@ -152,13 +155,15 @@ void* serv_game_t(void* arg)
 	doupdate();
 	printw("recieving");
 	refresh();
-
-	if((status=timed_recv(((player*)Current_player)->sd,&d,sizeof(data),0,10))!=sizeof(data))
+sleep(1);
+//	if((status=timed_recv(((player*)Current_player)->sd,&d,sizeof(data),0,10))!=sizeof(data))
+	if((status=read(((player*)Current_player)->sd,&d,sizeof(data)))!=sizeof(data))
 	{
 	    if(status!=-3)
 	    {
 		printw("client closed");
 		refresh();
+		sleep(1);
 		tr = Current_player->n;
 		close(((player*)Current_player->d)->sd);
 		--(par->get.pl.n);
@@ -175,6 +180,7 @@ void* serv_game_t(void* arg)
 	{
 	    printw("client no play");
 	    refresh();
+	    sleep(1);
 	    d.num=0;
 	}
 
@@ -218,8 +224,10 @@ refresh();
 		{
 		    d.bng=((player*)tr->d)->bngcnt;
 		    send(((player*)tr->d)->sd,&d,sizeof(data),0);
-		} 
-	    Current_player = Current_player->n;
+		}
+printw("Data sent to all players");
+refresh();
+
 	}
 	else
 	{
@@ -284,6 +292,7 @@ refresh();
 	    }
 	}
 
+	    Current_player = Current_player->n;
     }
     tr = par->get.pl.l.h;
 

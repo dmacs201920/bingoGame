@@ -22,6 +22,7 @@ void start_server(char **err)
     par.get.x=par.get.y=par.get.p=par.get.q=0;
     par.get.pl.n=1;
     player p;
+    pthread_mutex_init(&par.get.get_m,NULL);
     pthread_mutex_init(&par.get.pl.lock,NULL);
     pthread_mutex_init(&par.get.done_mutex,NULL);
     pthread_cond_init(&par.get.done,NULL);
@@ -29,7 +30,7 @@ void start_server(char **err)
     p.adl=sizeof(p.ad);
     init(&par.get.pl.l,sizeof(player),cmp,NULL,cpy);
 
-    if((par.sersd=p.sd=socket(AF_INET,SOCK_STREAM,0))<0)
+   if((par.sersd=p.sd=socket(AF_INET,SOCK_STREAM,0))<0)
     {
 	*err="Unable to open stream socket";
 	return;
@@ -242,6 +243,23 @@ void start_server(char **err)
     doupdate();				//REFRESHES ALL THE PANELS IN ORDER REQUIRED
 
 
+    if(pthread_create(&par.get.gameid,NULL,serv_game_t,&par)!=0)
+    {
+	pthread_cancel(par.getid);
+	del_panel(par.chancepan);
+	delwin(par.playchance);
+	del_panel(par.bingcnt);
+	delwin(par.bingocnt);
+	for(t1=0;t1<5;++t1)
+	    for(t2=0;t2<5;++t2)
+	    {
+		del_panel(par.pan[t1][t2]);
+		delwin(par.get.bingo[t1][t2]);
+	    }
+	close(p.sd);
+	*err="Unable to create game pthread";
+	return;
+    }
 
 
 
@@ -265,23 +283,6 @@ void start_server(char **err)
 	return;
     }
 
-    if(pthread_create(&par.get.gameid,NULL,serv_game_t,&par)!=0)
-    {
-	pthread_cancel(par.getid);
-	del_panel(par.chancepan);
-	delwin(par.playchance);
-	del_panel(par.bingcnt);
-	delwin(par.bingocnt);
-	for(t1=0;t1<5;++t1)
-	    for(t2=0;t2<5;++t2)
-	    {
-		del_panel(par.pan[t1][t2]);
-		delwin(par.get.bingo[t1][t2]);
-	    }
-	close(p.sd);
-	*err="Unable to create game pthread";
-	return;
-    }
     while(end_game_flag==0)
 	sleep(0.1);
     if(end_game_flag!=0)

@@ -8,6 +8,7 @@ void* serv_game_t(void* arg)
     game_p *par=arg;
     node *Current_player=par->get.pl.l.h,*tr;
 
+    pthread_mutex_lock(&par->get.get_m);
     int flag=0;
 
     while(Current_player!=Current_player->n)
@@ -15,27 +16,43 @@ void* serv_game_t(void* arg)
 	if(Current_player==par->get.pl.l.h)
 	{
 	    wattron(par->playchance,COLOR_PAIR(2)|A_BOLD);
-	    mvwprintw(par->playchance,1,1,"       YOU ARE PLAYING     ");
+	    mvwprintw(par->playchance,1,1,"       YOU ARE PLAYING!!!     ");
 	    wattron(par->playchance,COLOR_PAIR(2)|A_BOLD); 
 	    update_panels();
 	    doupdate();
 	    pthread_mutex_unlock(&par->get.get_m);
+	    printw("Entering Timed Wait");
+	    refresh();
 	    if(timedwait_cond(&par->get.done,&par->get.done_mutex,10)==0)
 	    {
-		pthread_mutex_lock(&par->get.get_m);
 		tr = Current_player;
-		d.num=((player*)Current_player->d)->array[par->get.p][par->get.q];
+	    printw("In Timed Wait");
+	    refresh();
+		pthread_mutex_lock(&par->get.get_m);
+		d.num=par->get.array[par->get.p][par->get.q];
+	    printw("d.num = %d",d.num);
+	    refresh();
 		do
 		{
-		    search_strike(((player*)tr->d)->array,((player*)Current_player->d)->array[par->get.x][par->get.y],&i,&j);
+			if(tr == par->get.pl.l.h)
+			{
+				par->get.array[par->get.p][par->get.q] = 0;
+		    		if((((player*)tr->d)->bngcnt+=bingos(par->get.array,i,j))>4)
+				    flag=1;
 
-		    if((((player*)tr->d)->bngcnt+=bingos(((player*)tr->d)->array,i,j))>4)
-			flag=1;
+			}
+			else
+			{
+			    search_strike(((player*)tr->d)->array,d.num,&i,&j);
+			    ((player*)tr->d)->array[i][j] = 0;
+			    if((((player*)tr->d)->bngcnt+=bingos(((player*)tr->d)->array,i,j))>4)
+				flag=1;
+			}
 
 		    tr = tr->n;
 
 		}while(tr!=Current_player);
-		print_array(par->get.bingo,((player*)par->get.pl.l.h->d)->array,par->get.x,par->get.y);
+		print_array(par->get.bingo,par->get.array,par->get.x,par->get.y);
 		bingodisp(par->bingocnt,((player*)par->get.pl.l.h->d)->bngcnt);
 
 	    }
@@ -152,21 +169,31 @@ void* serv_game_t(void* arg)
 	{
 	    d.num=0;
 	}
+
 	else
 	{	
 	    tr = Current_player;
 	    do
 	    {
-		search_strike(((player*)tr->d)->array,d.num,&i,&j);
+			if(tr == par->get.pl.l.h)
+			{
+			    search_strike(par->get.array,par->get.array[par->get.p][par->get.q],&i,&j);
+		    		if((((player*)tr->d)->bngcnt+=bingos(par->get.array,i,j))>4)
+				    flag=1;
 
-		if((((player*)tr->d)->bngcnt+=bingos(((player*)tr->d)->array,i,j))>4)
-		    flag=1;
+			}
+			else
+			{
+			    search_strike(((player*)tr->d)->array,par->get.array[par->get.p][par->get.q],&i,&j);
+			    if((((player*)tr->d)->bngcnt+=bingos(((player*)tr->d)->array,i,j))>4)
+				flag=1;
+			}
 
 	    }while(tr!=Current_player);
-
-	    print_array(par->get.bingo,((player*)par->get.pl.l.h->d)->array,par->get.x,par->get.y);
-	    bingodisp(par->bingocnt,((player*)par->get.pl.l.h->d)->bngcnt);
+		print_array(par->get.bingo,par->get.array,par->get.x,par->get.y);
+		bingodisp(par->bingocnt,((player*)par->get.pl.l.h->d)->bngcnt);
 	}
+
 	if(flag!=1)
 	{
 	    tr=Current_player->n;

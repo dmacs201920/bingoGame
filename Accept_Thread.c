@@ -8,11 +8,10 @@ void* accept_t(void* arg)
     node* t=pl->pl->l.h;
     struct sockaddr_in head_ad = ((player*)t->d)->ad;
     player *pnt;
-    int i,j;
+    int i,j,flag = 0;
     server_started_screen(pl->w,pl->pan,head_ad,pl->pl->n);
     while(pl->pl->n<5)
     {
-senderr:
 	if((p.sd=accept(((player*)t->d)->sd,ADCAST &p.ad,&p.adl))<0)
 	{
 	    pthread_mutex_lock(&pl->pl->lock);
@@ -39,17 +38,22 @@ senderr:
 		    printw("\nSend Err\n");
 		    refresh();
 		    sleep(2);
-		    goto senderr;
+		    flag = 1;
+		    break;
 		}
-
 	    }
-
+		if(flag)
+		    break;
+		
 	}
+		if(flag)
+		    continue;
+
 	if(pthread_create(&pnt->tid,NULL,confirm_t,arg)!=0)
 	{
 	    close(p.sd);
 	    pthread_mutex_unlock(&pl->pl->lock);
-	    goto senderr;
+	    continue;
 	}
 	server_started_screen(pl->w,pl->pan,head_ad,++pl->pl->n);
 	pthread_mutex_unlock(&pl->pl->lock);

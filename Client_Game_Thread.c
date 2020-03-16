@@ -39,35 +39,32 @@ void* client_game_t(void *arg)
 	    if(d.num!=0)
 	    {
 		search_strike(par->get.array,d.num,&posx,&posy);
-		if(posx==-1)
+		if(posx!=-1)
 		{
-		    //NUMBER INVALID
-		    goto invalid;
+		    par->get.array[posx][posy] = 0;
+		    //	player_bingo+=bingos(par->get.array,posx,posy);
+		    bingodisp(par->bingocnt,d.bng);		//to display no of bingos completed
+
+
+
+		    if(posx==par->get.x&&posy==par->get.y)
+		    {
+			wattron(par->get.bingo[posx][posy],A_STANDOUT|COLOR_PAIR(3));
+			mvwprintw(par->get.bingo[posx][posy],2,3,"X ");
+			wattroff(par->get.bingo[posx][posy],A_STANDOUT|COLOR_PAIR(3));
+		    }
+		    else
+		    {
+			wattron(par->get.bingo[posx][posy],COLOR_PAIR(3));
+			mvwprintw(par->get.bingo[posx][posy],2,3,"X ");
+			wattroff(par->get.bingo[posx][posy],COLOR_PAIR(3));
+		    }
+		    update_panels();
+		    doupdate();
 		}
-		par->get.array[posx][posy] = 0;
-		//	player_bingo+=bingos(par->get.array,posx,posy);
-		bingodisp(par->bingocnt,d.bng);		//to display no of bingos completed
-
-
-
-		if(posx==par->get.x&&posy==par->get.y)
-		{
-		    wattron(par->get.bingo[posx][posy],A_STANDOUT|COLOR_PAIR(3));
-		    mvwprintw(par->get.bingo[posx][posy],2,3,"X ");
-		    wattroff(par->get.bingo[posx][posy],A_STANDOUT|COLOR_PAIR(3));
-		}
-		else
-		{
-		    wattron(par->get.bingo[posx][posy],COLOR_PAIR(3));
-		    mvwprintw(par->get.bingo[posx][posy],2,3,"X ");
-		    wattroff(par->get.bingo[posx][posy],COLOR_PAIR(3));
-		}
-		update_panels();
-		doupdate();
-
 
 	    }//d.num!=0 if close
-invalid:
+
 	    //strike the number on the screen (ncurses)
 
 	    if(d.com=='y')
@@ -157,39 +154,6 @@ invalid:
 		}
 
 	    }
-
-
-
-	    /*
-	       else if(d.com=='w'||d.com=='l')
-	       {
-
-	       if(d.com=='w')
-	       {
-	       wattron(par->playchance,COLOR_PAIR(2)|A_BOLD|A_BLINK);
-	       mvwprintw(par->playchance,1,1,"       YOU WON!!!!!        ");
-	       wattron(par->playchance,COLOR_PAIR(2)|A_BOLD|A_BLINK); 
-	       update_panels();
-	       doupdate();
-	       sleep(2);
-	       pthread_cancel(par->getid);
-	       end_game_flag = 1;
-	       pthread_exit(NULL);
-	       }
-	       else if(d.com=='l')
-	       {
-	       wattron(par->playchance,COLOR_PAIR(2)|A_BOLD|A_BLINK);
-	       mvwprintw(par->playchance,1,1,"       YOU LOST           ");
-	       wattron(par->playchance,COLOR_PAIR(2)|A_BOLD|A_BLINK); 
-	       update_panels();
-	       doupdate();		sleep(2);
-	       pthread_cancel(par->getid);
-	       end_game_flag = 2;
-	       pthread_exit(NULL);
-	       }
-
-
-	       }*/
 	}//d.com multiple case if close
 
     }//while close

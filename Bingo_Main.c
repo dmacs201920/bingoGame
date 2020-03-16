@@ -6,7 +6,7 @@
 int end_game_flag=0;
 void main() 
 {
-    pthread_setconcurrency(6);
+    pthread_setconcurrency(25);
     char *err = NULL;
     initscr(); 
     cbreak(); 

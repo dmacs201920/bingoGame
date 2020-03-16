@@ -14,7 +14,7 @@ void* timer_2(void* arg)
     sleep(par->sec);
     if(par->status==-2)
 	pthread_cancel(par->recvt);
-    par->status=-1;
+    par->status=-3;
     pthread_exit(NULL);
 }
 

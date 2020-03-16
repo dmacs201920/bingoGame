@@ -150,28 +150,38 @@ void* serv_game_t(void* arg)
 	wattron(par->playchance,COLOR_PAIR(2)|A_BOLD); 
 	update_panels();
 	doupdate();
+	printw("recieving");
+	refresh();
 
-	if((status=timed_recv(((player*)Current_player)->sd,&d,sizeof(data),0,10))!=sizeof(data)&&status!=-1)
+	if((status=timed_recv(((player*)Current_player)->sd,&d,sizeof(data),0,10))!=sizeof(data))
 	{
-	    tr = Current_player->n;
-	    close(((player*)Current_player->d)->sd);
-	    --(par->get.pl.n);
-	    Current_player->n->p = Current_player->p;
-	    Current_player->p->n = Current_player->n;
-	    free(Current_player->d);
-	    free(Current_player);
+	    if(status!=-3)
+	    {
+		printw("client closed");
+		refresh();
+		tr = Current_player->n;
+		close(((player*)Current_player->d)->sd);
+		--(par->get.pl.n);
+		Current_player->n->p = Current_player->p;
+		Current_player->p->n = Current_player->n;
+		free(Current_player->d);
+		free(Current_player);
 
-	    Current_player = tr;
-	    continue;
-
+		Current_player = tr;
+		continue;
+	    }
 	}
-	else if(status==-1)
+	else if(status==-3)
 	{
+	    printw("client no play");
+	    refresh();
 	    d.num=0;
 	}
 
 	else
 	{	
+printw("client played");
+refresh();
 	    tr = Current_player;
 	    do
 	    {

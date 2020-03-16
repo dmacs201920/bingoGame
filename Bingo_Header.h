@@ -1,3 +1,4 @@
+
 /*
  * This is the Header file for the bingo game.
  */
@@ -109,8 +110,15 @@ typedef struct
     pthread_t sqt,acct;
 }conf_p;
 /*
-
- */
+ * ******************************* Used as parameter for Accept_Thread, Start_Quit_Thread and Confirm_Thread. *******************************
+ * pl		-	Used as a pointer to playerlist in game_p.gatkey_p.playerlist.
+ * p		-	The node in playerlist that the confirm thread is concerned about.
+ * w		-	The window that will be printer when the accept thread starts.
+ * pan		-	PANEL wrapper for the window w.
+ * status	-	To know whether accept thread or start quit thread is done.
+ * sqt		-	Start_Quit_Thread's pthread id.
+ * acct		-	Aceept_thread's pthread id.
+*/
 
 typedef struct
 {
@@ -120,6 +128,13 @@ typedef struct
     getkey_p get;
     pthread_t getid;
 }game_p;		//REQUREMENTS FOR RUNNING A GAME
+/*
+ * ********************* Used as parameter for server and client game threads ****************************************8
+ * playchance	-	Used as the area where the player's chance to play and other text will be displayed.
+ * bingocnt	-	Place where the BINGO will be reaveled as the bingo count increases.
+ * get		-	Used as the parameter for getkey thread.
+ * getid	-	Used to store getket thread's pthread id.
+ */
 
 typedef struct
 {

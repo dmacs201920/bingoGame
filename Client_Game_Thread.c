@@ -29,6 +29,7 @@ void* client_game_t(void *arg)
 	wattron(par->playchance,COLOR_PAIR(2)|A_BOLD);
 	mvwprintw(par->playchance,1,1,"       OPPONENT %d PLAYING        ",d.opp);
 	wattron(par->playchance,COLOR_PAIR(2)|A_BOLD);
+		    bingodisp(par->bingocnt,d.bng);		//to display no of bingos completed
 	update_panels();
 	doupdate();
 
@@ -43,7 +44,6 @@ void* client_game_t(void *arg)
 		{
 		    par->get.array[posx][posy] = 0;
 		    //	player_bingo+=bingos(par->get.array,posx,posy);
-		    bingodisp(par->bingocnt,d.bng);		//to display no of bingos completed
 
 
 
@@ -95,7 +95,6 @@ void* client_game_t(void *arg)
 		    par->get.array[par->get.p][par->get.q] = 0;
 		    //		    player_bingo+=bingos(par->get.array,par->get.p,par->get.q);
 
-		    bingodisp(par->bingocnt,d.bng);
 
 		    if(par->get.p==par->get.x&&par->get.q==par->get.y)
 		    {
@@ -126,6 +125,7 @@ void* client_game_t(void *arg)
 
 	    if(d.com=='t')
 	    {
+		printw("d.bng : %d",d.bng);
 		if(d.bng>4)
 		{
 		    wattron(par->playchance,COLOR_PAIR(2)|A_BOLD|A_BLINK);

@@ -102,8 +102,9 @@ void start_server(char **err)
 	sleep(0.2);
     del_panel(conf.pan);
     delwin(conf.w);
+    ((player*)par.get.pl.l.h->d)->plid=0;
     node* temp=conf.pl->l.h->n;
-    i=-1;
+    i=0;
     do
     {
 	((player*)temp->d)->plid=++i;
@@ -117,8 +118,6 @@ void start_server(char **err)
 	close(p.sd);
 	return;
     }
-    clear();
-    refresh();
     //print screen
     int startx = 7,starty = 60,row,col;
     par.playchance = newwin(3,120,3,starty);		//CREATES THE WINDOW AND RETURNS A POINTER TO THE PLAYCHANCE
@@ -285,7 +284,7 @@ void start_server(char **err)
 
     while(end_game_flag==0)
 	sleep(0.1);
-    if(end_game_flag!=0)
+    if(end_game_flag==3)
 	pthread_join(par.get.gameid,(void**)err);
 
     for(i=0;i<5;i++)

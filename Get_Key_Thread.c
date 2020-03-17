@@ -50,21 +50,16 @@ void* get_key_t(void *arg)
 		    continue;
 		if(pthread_mutex_trylock(&par->get_m)==0)
 		{
-		    printw("locked:%d",par->array[par->p][par->q]);
-		    refresh();
-		    sleep(1);
 		    pthread_mutex_lock(&par->done_mutex);
 		    par->p=(par->x);
 		    par->q=(par->y);
 		    pthread_cond_signal(&par->done);
 		    pthread_mutex_unlock(&par->done_mutex);
 		    pthread_mutex_unlock(&par->get_m);
-		    printw("unlocked:%d",par->array[par->p][par->q]);
-		    refresh();
-		    sleep(1);
 		}
 	}
 	print_array(par->bingo,par->array,(par->x),(par->y));
 
     }
 }
+

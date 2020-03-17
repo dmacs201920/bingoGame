@@ -17,6 +17,7 @@ int main(int ac, char **ar){
 	perror("bind");
 	exit(1);
     }
+	printf("PORT NO : %d\n",ntohs(serverAddr.sin_port));
     if(listen(welcomeSocket,5)==0);
     else{
 	printf("\n\nError\n");

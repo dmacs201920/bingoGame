@@ -124,9 +124,6 @@ void start_server(char **err)
     if(par.playchance==NULL)				
     {
 	*err="Unable to create WINDOW";				//ERROR MSG
-	//	pthread_mutex_destoy(&par.get.get_m);
-	//	pthread_mutex_destoy(&par.get.done_mutex);
-	//	pthread_cond_destoy(&par.get.done);
 	return;
     }
 
@@ -134,9 +131,6 @@ void start_server(char **err)
     if(par.chancepan==NULL)				
     {
 	delwin(par.playchance);
-	//	pthread_mutex_destoy(&par.get.get_m);
-	//	pthread_mutex_destoy(&par.get.done_mutex);
-	//	pthread_cond_destoy(&par.get.done);
 	*err="Unable to create PANEL";				//ERROR MSG
 	return;
     }
@@ -147,9 +141,6 @@ void start_server(char **err)
 	delwin(par.playchance);
 	del_panel(par.chancepan);
 	*err="Unable to create WINDOW";				//ERROR MSG
-	//	pthread_mutex_destoy(&par.get.get_m);
-	//	pthread_mutex_destoy(&par.get.done_mutex);
-	//	pthread_cond_destoy(&par.get.done);
 	return;
     }
 
@@ -160,9 +151,6 @@ void start_server(char **err)
 	del_panel(par.chancepan);
 	delwin(par.bingocnt);
 	*err="Unable to create PANEL";				//ERROR MSG
-	//	pthread_mutex_destoy(&par.get.get_m);
-	//	pthread_mutex_destoy(&par.get.done_mutex);
-	//	pthread_cond_destoy(&par.get.done);
 	return;
     }
 
@@ -190,9 +178,6 @@ void start_server(char **err)
 			delwin(par.get.bingo[t1][t2]);
 		    }
 		*err="Unable to create WINDOW";				//ERROR MSG
-		//	pthread_mutex_destoy(&par.get.get_m);
-		//	pthread_mutex_destoy(&par.get.done_mutex);
-		//	pthread_cond_destoy(&par.get.done);
 		return;
 	    }
 	    par.pan[i][j] = new_panel(par.get.bingo[i][j]);
@@ -210,9 +195,6 @@ void start_server(char **err)
 			del_panel(par.pan[t1][t2]);
 		    }
 		*err="Unable to create PANEL";				//ERROR MSG
-		//	pthread_mutex_destoy(&par.get.get_m);
-		//	pthread_mutex_destoy(&par.get.done_mutex);
-		//	pthread_cond_destoy(&par.get.done);
 		return;
 	    }
 
@@ -276,15 +258,12 @@ void start_server(char **err)
 		delwin(par.get.bingo[t1][t2]);
 	    }
 	*err="Unable to create Get Key thread";
-	//	pthread_mutex_destoy(&par.get.get_m);
-	//	pthread_mutex_destoy(&par.get.done_mutex);
-	//	pthread_cond_destoy(&par.get.done);
 	return;
     }
 
     while(end_game_flag==0)
 	sleep(0.1);
-    if(end_game_flag==3)
+    if(end_game_flag>0)
 	pthread_join(par.get.gameid,(void**)err);
 
     for(i=0;i<5;i++)
@@ -299,10 +278,12 @@ void start_server(char **err)
     delwin(par.playchance);
     del_panel(par.bingcnt);
     delwin(par.bingocnt);
-
-    //	pthread_mutex_destoy(&par.get.get_m);
-    //	pthread_mutex_destoy(&par.get.done_mutex);
-    //	pthread_cond_destoy(&par.get.done);
-    close(p.sd);
+    node *tmp=par.get.pl.l.h;
+    do
+    {
+	close(((player*)tmp->d)->sd);
+	tmp=tmp->n;
+    }while(tmp!=par.get.pl.l.h);
+    freecdll(par.get.pl.l);
     return;
 }

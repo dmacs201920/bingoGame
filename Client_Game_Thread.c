@@ -29,7 +29,7 @@ void* client_game_t(void *arg)
 	wattron(par->playchance,COLOR_PAIR(2)|A_BOLD);
 	mvwprintw(par->playchance,1,1,"       OPPONENT %d PLAYING        ",d.opp);
 	wattron(par->playchance,COLOR_PAIR(2)|A_BOLD);
-		    bingodisp(par->bingocnt,d.bng);		//to display no of bingos completed
+	bingodisp(par->bingocnt,d.bng);		//to display no of bingos completed
 	update_panels();
 	doupdate();
 
@@ -112,6 +112,8 @@ void* client_game_t(void *arg)
 		    //	break;
 		    //  }//if close
 		}//if close
+		else
+		    pthread_mutex_lock(&par->get.get_m);
 
 		wattron(par->playchance,COLOR_PAIR(2)|A_BOLD);
 		mvwprintw(par->playchance,1,1,"       OPPONENT %d PLAYING        ",d.opp);
@@ -121,23 +123,14 @@ void* client_game_t(void *arg)
 		doupdate();
 	    }//d.com==y if close
 
-	    pthread_mutex_trylock(&par->get.get_m);
 
 	    if(d.com=='t')
 	    {
-		printw("d.bng : %d",d.bng);
 		if(d.bng>4)
 		{
 		    wattron(par->playchance,COLOR_PAIR(2)|A_BOLD|A_BLINK);
 		    mvwprintw(par->playchance,1,1,"       YOU WON!!!!!        ");
 		    wattroff(par->playchance,COLOR_PAIR(2)|A_BOLD|A_BLINK); 
-		    update_panels();
-		    doupdate();
-		    sleep(2);
-		    pthread_cancel(par->getid);
-		    end_game_flag = 1;
-		    pthread_exit(NULL);
-
 		}
 
 		else
@@ -145,14 +138,17 @@ void* client_game_t(void *arg)
 		    wattron(par->playchance,COLOR_PAIR(2)|A_BOLD|A_BLINK);
 		    mvwprintw(par->playchance,1,1,"       YOU LOST           ");
 		    wattroff(par->playchance,COLOR_PAIR(2)|A_BOLD|A_BLINK); 
-		    update_panels();
-		    doupdate();		sleep(2);
-		    pthread_cancel(par->getid);
-		    end_game_flag = 2;
-		    pthread_exit(NULL);
-
 		}
-
+		update_panels();
+		doupdate();
+		sleep(2);
+		pthread_cancel(par->getid);
+		getch();
+		if(d.bng>4)
+		    end_game_flag = 1;
+		else
+		    end_game_flag = 2;
+		pthread_exit(NULL);
 	    }
 	}//d.com multiple case if close
 

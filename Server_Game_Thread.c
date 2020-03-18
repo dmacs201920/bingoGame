@@ -12,6 +12,9 @@ void* serv_game_t(void* arg)
 
     int flag=0;
 
+    wattron(stdscr,COLOR_PAIR(2)|A_BOLD);
+    mvwprintw(stdscr,29,70,"(PRESS 'q' TO QUIT GAME)");
+    wattroff(stdscr,COLOR_PAIR(2)|A_BOLD);
     while(Current_player!=Current_player->n)
     {
 	if(Current_player==par->get.pl.l.h)
@@ -124,6 +127,7 @@ void* serv_game_t(void* arg)
 		wattron(par->playchance,COLOR_PAIR(2)|A_BOLD|A_BLINK);
 		mvwprintw(par->playchance,1,1,"                                     ");
 		mvwprintw(par->playchance,1,1,"YOU WON!!!!!");
+		mvwprintw(par->playchance,2,1,"PRESS ANY KEY TO CONTINUE...");
 		wattroff(par->playchance,COLOR_PAIR(2)|A_BOLD|A_BLINK); 
 	    }
 	    else
@@ -131,6 +135,7 @@ void* serv_game_t(void* arg)
 		wattron(par->playchance,COLOR_PAIR(2)|A_BOLD|A_BLINK);
 		mvwprintw(par->playchance,1,1,"                                     ");
 		mvwprintw(par->playchance,1,1,"YOU LOST");
+		mvwprintw(par->playchance,2,1,"PRESS ANY KEY TO CONTINUE...");
 		wattroff(par->playchance,COLOR_PAIR(2)|A_BOLD|A_BLINK); 
 	    }
 	    update_panels();

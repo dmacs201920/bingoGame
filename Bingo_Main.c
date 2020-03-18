@@ -19,12 +19,38 @@ void main()
     init_pair(3,COLOR_CYAN,COLOR_BLACK);
     init_pair(4,COLOR_RED,COLOR_BLACK);
     init_pair(5,COLOR_CYAN,COLOR_CYAN);
+    init_pair(6,COLOR_GREEN,COLOR_BLACK);
     WINDOW *menu,*title;
     PANEL *pan[2];
-    menu = newwin(20,50,6,50);
-    title = newwin(5,50,2,50);
-    pan[0] = new_panel(menu);
-    pan[1] = new_panel(title);
+    if((menu = newwin(20,50,6,50))==NULL)
+    {
+    	perror("WINDOW CREATE ERROR\n");
+	exit(1);
+    }
+    if((title = newwin(5,50,2,50))==NULL)
+    {
+    	delwin(menu);
+    	perror("WINDOW CREATE ERROR\n");
+	exit(2);
+    }
+    if((pan[0] = new_panel(menu))==NULL)
+    {
+    
+    	delwin(menu);
+    	delwin(title);
+    	perror("PANEL CREATE ERROR\n");
+	exit(1);
+    
+    }
+    if((pan[1] = new_panel(title))==NULL)
+    {
+	del_panel(pan[0]);
+    	delwin(menu);
+    	delwin(title);
+    	perror("PANEL CREATE ERROR\n");
+	exit(1);
+    
+    }
     Print_MainMenu(menu,title,pan,choice);
 
     keypad( stdscr , TRUE ); // enable keyboard input for the window.

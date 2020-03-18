@@ -146,9 +146,14 @@ void vs_comp(char **err)
     doupdate();				//REFRESHES ALL THE PANELS IN ORDER REQUIRED
 
 
+    wattron(stdscr,COLOR_PAIR(4));
+    mvwprintw(stdscr,29,70,"   PRESS 'q' TO EXIT GAME  ");
+    wattroff(stdscr,COLOR_PAIR(4));
     while(player_bingo<5&&comp_bingo<5)
     {
+	wattron(playchance,COLOR_PAIR(2));
 	mvwprintw(playchance,1,1,"   YOU ARE PLAYING  ");
+	wattroff(playchance,COLOR_PAIR(2));
 	update_panels();
 	doupdate();
 	if(get_key(bingo,&x,&y,player)==1)			//GETS READY FOR INPUT FORM USER

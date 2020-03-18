@@ -10,6 +10,9 @@ void* client_game_t(void *arg)
 
     pthread_mutex_lock(&par->get.get_m);
 
+    wattron(stdscr,COLOR_PAIR(4));
+    mvwprintw(stdscr,29,70,"   PRESS 'q' TO EXIT GAME  ");
+    wattroff(stdscr,COLOR_PAIR(4));
     wattron(par->playchance,COLOR_PAIR(2)|A_BOLD);
     mvwprintw(par->playchance,1,1,"    WAITING FOR SERVER        ");
     wattron(par->playchance,COLOR_PAIR(2)|A_BOLD);

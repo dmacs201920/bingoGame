@@ -26,8 +26,9 @@ void connect_to_server(char **err)
 	return;
 
     }
-
+wattron(ser_det,COLOR_PAIR(1));
     box(ser_det,0,0);
+wattroff(ser_det,COLOR_PAIR(1));
 
 
     if((par.sersd = socket(AF_INET,SOCK_STREAM,0))==-1)		//otherwise check for errno
@@ -68,12 +69,12 @@ void connect_to_server(char **err)
 	}
 	ad.sin_port=htons(port_no);   
 
-	mvwprintw(ser_det,10,2,"PORT NUMBER : %d",port_no);
 
 	if((connect(par.sersd,ADCAST &ad,adl))!=0)
 	{
 	    wattron(ser_det,COLOR_PAIR(4));
 	    mvwprintw(ser_det,15,2,"UNABLE TO CONNECT TO SERVER!!!");
+	    mvwprintw(ser_det,16,2,"PLEASE TRY AGAIN");
 	    wattroff(ser_det,COLOR_PAIR(4));
 	    continue;
 	}

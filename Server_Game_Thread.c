@@ -2,8 +2,6 @@
 int end_game_flag;
 void* serv_game_t(void* arg)
 {
-    clear();
-    refresh();
     game_p *par=arg;
     pthread_mutex_lock(&par->get.get_m);
     print_array(par->get.bingo,par->get.array,par->get.x,par->get.y);

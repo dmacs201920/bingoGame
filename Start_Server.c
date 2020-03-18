@@ -102,6 +102,8 @@ void start_server(char **err)
 	sleep(0.2);
     del_panel(conf.pan);
     delwin(conf.w);
+    clear();
+    refresh();
     ((player*)par.get.pl.l.h->d)->plid=0;
     node* temp=conf.pl->l.h->n;
     i=0;

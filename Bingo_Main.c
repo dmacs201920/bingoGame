@@ -64,11 +64,12 @@ void main()
 			wattroff(menu,COLOR_PAIR(4));
 
 			clear();
-			refresh();
 			break;
 		    case 1:
 			clear();
 			refresh();
+			del_panel(pan[1]);
+			del_panel(pan[0]);
 			start_server(&err);
 			wattron(menu,COLOR_PAIR(4));
 			if(err!=NULL)
@@ -81,8 +82,9 @@ void main()
 			}
 			wattroff(menu,COLOR_PAIR(4));
 
+			pan[0] = new_panel(menu);
+			pan[1] = new_panel(title);
 			clear();
-			refresh();
 			break;
 		    case 2:
 			clear();
@@ -99,7 +101,6 @@ void main()
 			}
 			wattroff(menu,COLOR_PAIR(4));
 			clear();
-			refresh();
 			break;
 
 		    case 5:
@@ -119,5 +120,4 @@ void main()
 
     }
 
-    endwin();
 }

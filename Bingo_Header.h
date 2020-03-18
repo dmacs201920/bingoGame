@@ -182,4 +182,4 @@ void cleanup_t(void*);
 void connect_to_server(char **err);
 void* client_game(void* arg);
 void server_started_screen(WINDOW *w,PANEL *pan,struct sockaddr_in addr,int n);
-
+void how_to_play();

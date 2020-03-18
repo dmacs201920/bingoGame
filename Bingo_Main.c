@@ -128,6 +128,12 @@ void main()
 			wattroff(menu,COLOR_PAIR(4));
 			clear();
 			break;
+		case 3:
+			clear();
+			refresh();
+			how_to_play();
+			clear();
+			refresh();
 
 		    case 5:
 			del_panel(pan[0]);

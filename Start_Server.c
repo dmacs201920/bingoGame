@@ -22,10 +22,26 @@ void start_server(char **err)
     par.get.x=par.get.y=par.get.p=par.get.q=0;
     par.get.pl.n=1;
     player p;
-    pthread_mutex_init(&par.get.get_m,NULL);
-    pthread_mutex_init(&par.get.pl.lock,NULL);
-    pthread_mutex_init(&par.get.done_mutex,NULL);
-    pthread_cond_init(&par.get.done,NULL);
+    if(pthread_mutex_init(&par.get.get_m,NULL)!=0)
+    {
+    	*err = "MUTEX INIT ERROR";
+	return;
+    }
+    if(pthread_mutex_init(&par.get.pl.lock,NULL)!=0)
+    {
+    	*err = "MUTEX INIT ERROR";
+	return;
+    }
+    if(pthread_mutex_init(&par.get.done_mutex,NULL)!=0)
+    {
+    	*err = "MUTEX INIT ERROR";
+	return;
+    }
+    if(pthread_cond_init(&par.get.done,NULL)!=0)
+    {
+    	*err = " PTHREAD COND INIT ERROR";
+	return;
+    }
     fill_bingo(par.get.array);
     p.adl=sizeof(p.ad);
     init(&par.get.pl.l,sizeof(player),cmp,NULL,cpy);

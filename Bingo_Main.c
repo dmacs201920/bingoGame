@@ -24,32 +24,32 @@ void main()
     PANEL *pan[2];
     if((menu = newwin(20,50,6,50))==NULL)
     {
-    	perror("WINDOW CREATE ERROR\n");
+	perror("WINDOW CREATE ERROR\n");
 	exit(1);
     }
     if((title = newwin(5,50,2,50))==NULL)
     {
-    	delwin(menu);
-    	perror("WINDOW CREATE ERROR\n");
+	delwin(menu);
+	perror("WINDOW CREATE ERROR\n");
 	exit(2);
     }
     if((pan[0] = new_panel(menu))==NULL)
     {
-    
-    	delwin(menu);
-    	delwin(title);
-    	perror("PANEL CREATE ERROR\n");
+
+	delwin(menu);
+	delwin(title);
+	perror("PANEL CREATE ERROR\n");
 	exit(1);
-    
+
     }
     if((pan[1] = new_panel(title))==NULL)
     {
 	del_panel(pan[0]);
-    	delwin(menu);
-    	delwin(title);
-    	perror("PANEL CREATE ERROR\n");
+	delwin(menu);
+	delwin(title);
+	perror("PANEL CREATE ERROR\n");
 	exit(1);
-    
+
     }
     Print_MainMenu(menu,title,pan,choice);
 
@@ -128,13 +128,20 @@ void main()
 			wattroff(menu,COLOR_PAIR(4));
 			clear();
 			break;
-		case 3:
+		    case 3:
 			clear();
 			refresh();
 			how_to_play();
 			clear();
 			refresh();
-
+			break;
+		    case 4:
+			clear();
+			refresh();
+			about();
+			clear();
+			refresh();
+			break;
 		    case 5:
 			del_panel(pan[0]);
 			delwin(menu);

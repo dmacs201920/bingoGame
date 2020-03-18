@@ -17,5 +17,5 @@ void about()
     attron(COLOR_PAIR(4));
     printw("\n\nPRESS q TO RETURN TO MAIN MENU\n");
     attroff(COLOR_PAIR(4));
-    while(getch()!=q);
+    while(getch()!='q');
 }

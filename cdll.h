@@ -1,3 +1,9 @@
+/*
+ * This is and implementaion of Generalized Circular Double Linked List.
+ * This was written by Sai Aravind S.V.
+ * The data is taken to be the address of the actual data.
+ * The user is supposed to implement ways of comparing, copying, displaying.
+ */
 #include<stdlib.h>
 #include<stdio.h>
 struct node

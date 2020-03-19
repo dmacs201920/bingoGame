@@ -14,7 +14,7 @@ void* accept_t(void* arg)
     int i,j,flag = 0;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    server_started_screen(pl->w,pl->pan,head_ad,pl->pl->n);	// TO PRINT THE START SERVER SCREEN
+    server_started_screen(pl->w,head_ad,pl->pl->n);	// TO PRINT THE START SERVER SCREEN
 
     while(pl->pl->n<5)			//CAN ACCEPT ONLY 5 PLAYERS MAXIMUM
     {
@@ -68,7 +68,7 @@ void* accept_t(void* arg)
 	    continue;
 	}
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	server_started_screen(pl->w,pl->pan,head_ad,++pl->pl->n);
+	server_started_screen(pl->w,head_ad,++pl->pl->n);
 	pthread_mutex_unlock(&pl->pl->lock);			//UNLOCKING MUTEX SO THE DATA CAN BE FILLED FOR THE NEXT
     }
 

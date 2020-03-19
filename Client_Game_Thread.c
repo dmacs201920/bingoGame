@@ -8,10 +8,12 @@ extern int end_game_flag;
 void* client_game_t(void *arg)
 {
 /*********************************************  INITIALIZATIONS OF VARIABLES  *********************************************************************/
+
     game_p *par = arg;
     data d={0,0,0,0};
 
     int posx,posy,cntr;
+
 /**************************************************************************************************************************************************/
 
     pthread_mutex_lock(&par->get.get_m);		//LOCKS THE DATA SO THAT USER CANNOT ENTER NUMBER TILL IT IS HIS CHANCE

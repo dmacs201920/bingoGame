@@ -14,7 +14,7 @@ void main()
     int c;
     int choice = 0;
 
-    init_pair(1,COLOR_BLUE,COLOR_BLUE);			//INITIALISING ARGUMENT 1 WITH THE COLOR PAIR
+    init_pair(1,COLOR_BLUE,COLOR_BLUE);		
     init_pair(2,COLOR_YELLOW,COLOR_BLACK);
     init_pair(3,COLOR_CYAN,COLOR_BLACK);
     init_pair(4,COLOR_RED,COLOR_BLACK);
@@ -51,7 +51,7 @@ void main()
 	exit(1);
 
     }
-    Print_MainMenu(menu,title,pan,choice);
+    Print_MainMenu(menu,title,choice);
 
     keypad( stdscr , TRUE ); // enable keyboard input for the window.
     noecho();

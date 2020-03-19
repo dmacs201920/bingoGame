@@ -33,9 +33,9 @@ void* client_game_t(void *arg)
     {
 	if(read(par->sersd,&d,sizeof(data))!=sizeof(data))	// SOCKET RECIEVE FUNCTION ERROR CHECK
 	{
-	    end_game_flag = -1;
 	    pthread_cancel(par->getid);
 	    
+	    end_game_flag = 3;
 	    pthread_exit("SERVER HAS EXITED");					//CLOSE THE REQUIRED AND EXIT FROM THE FUNCTION
 	}
 
@@ -56,7 +56,6 @@ void* client_game_t(void *arg)
 		if(posx!=-1)				// WHEN THE POSITION IS VALID
 		{
 		    par->get.array[posx][posy] = 0;
-		    //	player_bingo+=bingos(par->get.array,posx,posy);
 
 
 /////////////////////////////////////////////////// SCREEN PRINTING OF THE STRIKED NUMBER///////////////////////////////////////////////////////////
@@ -99,7 +98,6 @@ void* client_game_t(void *arg)
 		    d.num = par->get.array[par->get.p][par->get.q];
 		    write(par->sersd,&d,sizeof(data));
 		    par->get.array[par->get.p][par->get.q] = 0;
-		    //		    player_bingo+=bingos(par->get.array,par->get.p,par->get.q);
 
 
 /////////////////////////////////////////////////// SCREEN PRINTING OF THE STRIKED NUMBER///////////////////////////////////////////////////////////

@@ -1,16 +1,23 @@
 #include"Bingo_Header.h"
-extern int end_game_flag;
+/*
+ * This function is a thread used in client and server side of the game.
+ * It manages the keyboard screen interface.
+ * It takes a getkey_p variable as argument.
+ */
+extern int end_game_flag;	// Global variable for indicating end of the game.
 void* get_key_t(void *arg)
 {
 
     getkey_p *par=arg;
-    print_array(par->bingo,par->array,(par->x),(par->y));
-    int ch,f;
-
+    print_array(par->bingo,par->array,(par->x),(par->y));	
+    /*Prints the bingo array on the window*/
+    int ch;
+/***************************** Takes key board input dous the same thing as Get_Key ****************/
     while(ch=getch())
     {
 	switch(ch)
 	{
+	    /************************ if q is pressed exit the game by canceling game thread and				setting end game flag ************************************************/
 	    case 'q':
 		pthread_cancel(par->gameid);
 		end_game_flag = -1;
@@ -48,6 +55,10 @@ void* get_key_t(void *arg)
 	    case 10:
 		if(par->array[(par->x)][(par->y)]==0)
 		    continue;
+		/* If lock is obtained it means that the game thread wants input
+		 * Puts the data co-ordinates to par->p and par->q (x & y co-ordinates)
+		 * Then signals game thread that data is ready.
+		 */
 		if(pthread_mutex_trylock(&par->get_m)==0)
 		{
 		    pthread_mutex_lock(&par->done_mutex);

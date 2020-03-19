@@ -9,7 +9,7 @@ void vs_comp(char **err)
     int ch,flag;
 
     int startx = 7,starty = 60,row,col;
-
+/************************************ Creates window and panels for bingo game grid *******************************/
     WINDOW *bingo[5][5],*playchance,*bingocnt;		//BINGO IS FOR DISPLAYING THE ARRAY NUMBERS
     //PLAYCHANCE FOR DISPLAYING WHO'S CHANCE IT IS
     //BINGOCNT IS FOR DISPLAYING THE THE NUMBER OF ROWS,COLS AND DIAGONALS COMPLETED
@@ -21,9 +21,6 @@ void vs_comp(char **err)
     if(playchance==NULL)				
     {
 	*err="Unable to create WINDOW";				//ERROR MSG
-	//	pthread_mutex_destoy(&m);
-	//	pthread_mutex_destoy(&done_mutex);
-	//	pthread_cond_destoy(&done);
 	return;
     }
 
@@ -31,9 +28,6 @@ void vs_comp(char **err)
     if(chancepan==NULL)				
     {
 	delwin(playchance);
-	//	pthread_mutex_destoy(&m);
-	//	pthread_mutex_destoy(&done_mutex);
-	//	pthread_cond_destoy(&done);
 	*err="Unable to create PANEL";				//ERROR MSG
 	return;
     }
@@ -45,9 +39,6 @@ void vs_comp(char **err)
 	delwin(playchance);
 
 	*err="Unable to create WINDOW";				//ERROR MSG
-	//	pthread_mutex_destoy(&m);
-	//	pthread_mutex_destoy(&done_mutex);
-	//	pthread_cond_destoy(&done);
 	return;
     }
 
@@ -59,9 +50,6 @@ void vs_comp(char **err)
 
 	delwin(bingocnt);
 	*err="Unable to create PANEL";				//ERROR MSG
-	//	pthread_mutex_destoy(&m);
-	//	pthread_mutex_destoy(&done_mutex);
-	//	pthread_cond_destoy(&done);
 	return;
     }
 
@@ -91,9 +79,6 @@ void vs_comp(char **err)
 			delwin(bingo[t1][t2]);
 		    }
 		*err="Unable to create WINDOW";				//ERROR MSG
-		//	pthread_mutex_destoy(&m);
-		//	pthread_mutex_destoy(&done_mutex);
-		//	pthread_cond_destoy(&done);
 		return;
 	    }
 	    pan[i][j] = new_panel(bingo[i][j]);
@@ -115,9 +100,6 @@ void vs_comp(char **err)
 		    }
 
 		*err="Unable to create PANEL";				//ERROR MSG
-		//	pthread_mutex_destoy(&m);
-		//	pthread_mutex_destoy(&done_mutex);
-		//	pthread_cond_destoy(&done);
 		return;
 	    }
 
@@ -137,27 +119,35 @@ void vs_comp(char **err)
 	starty = sy; 
     }
 
+/******************************************************************************************************************/
 
 
     wattron(bingo[0][0],A_STANDOUT);
-    mvwprintw(bingo[0][0],2,3,"%d",player[0][0]);
+    mvwprintw(bingo[0][0],2,3,"%d",player[0][0]);		// Highlights the first position on the grid
     wattroff(bingo[0][0],A_STANDOUT);
     update_panels();	
     doupdate();				//REFRESHES ALL THE PANELS IN ORDER REQUIRED
 
+/******************************************************************************************************************/
 
     wattron(stdscr,COLOR_PAIR(4));
     mvwprintw(stdscr,29,70,"   PRESS 'q' TO EXIT GAME  ");
     wattroff(stdscr,COLOR_PAIR(4));
+/******************************************************************************************************************/
+/************************** Game starts now************************************************************************/
     while(player_bingo<5&&comp_bingo<5)
     {
+/************************* Firs is the user's chance **************************************************************/
 	wattron(playchance,COLOR_PAIR(2));
 	mvwprintw(playchance,1,1,"   YOU ARE PLAYING  ");
 	wattroff(playchance,COLOR_PAIR(2));
 	update_panels();
 	doupdate();
+/******************************************************************************************************************/
 	if(get_key(bingo,&x,&y,player)==1)			//GETS READY FOR INPUT FORM USER
-	{
+	{	
+	    	// If error Deletes every thing end exits.
+
 	    for(i=0;i<5;++i)
 		for(j=0;j<5;++j)
 		{
@@ -171,10 +161,11 @@ void vs_comp(char **err)
 	    return;
 	}
 	search_strike(comp,player[x][y],&i,&j);			//STRIKES THE NUMBER FOR COMPUTER GIVEN FROM THE USER
-	player[x][y] = 0;					
-	player_bingo+=bingos(player,x,y);			
+	player[x][y] = 0;					// Stiking is actually making it zero
+	player_bingo+=bingos(player,x,y);			// Increments bingo count for player
 	comp_bingo+=bingos(comp,i,j);				//INCREMENTS THE BINGO COUNT IF ANY ROW,COL OR DIAGONAL IS COMPLETE
-	if(i==-1)
+/******************************************************************************************************************/
+	if(i==-1)				// Means the number does not exist
 	{
 	    mvwprintw(playchance,1,1,"    ERROR!!!       ");
 	    update_panels();
@@ -193,12 +184,15 @@ void vs_comp(char **err)
 	    delwin(bingocnt);
 	    return;
 	}
-	bingodisp(bingocnt,player_bingo);
+/******************************************************************************************************************/
+	bingodisp(bingocnt,player_bingo);		// Displays the BINGO word in accordence with bingo count
+/*************************************** Computes Chance***********************************************************/
 	mvwprintw(playchance,1,1,"COMPUTER IS PLAYING");
 	//Print Comp is playing
 	update_panels();
 	doupdate();
-	sleep(0.25);
+	sleep(1);
+/*************************** Finds a number in it's array which is non zero ***************************************/
 	while(comp[p][q]==0)
 	{
 	    ++q;
@@ -208,9 +202,12 @@ void vs_comp(char **err)
 		q=0;
 	    }
 	}
+/******************************* Strike s that non-zeor number for both *******************************************/
 	search_strike(player,comp[p][q],&i,&j);
 	comp[p][q]=0;
 	comp_bingo+=bingos(comp,p,q);
+	player_bingo+=bingos(player,i,j);
+	bingodisp(bingocnt,player_bingo);
 	if(i==-1)
 	{
 	    mvwprintw(playchance,1,1,"    ERROR!!!       ");
@@ -229,48 +226,56 @@ void vs_comp(char **err)
 	    delwin(bingocnt);
 	    return;
 	}
-	if(i!=x||j!=y)
+/******************************************************************************************************************/
+	if(i!=x||j!=y)		// Checks whether not to highlight that position or not
 	{
 	    wattron(bingo[i][j],A_BOLD|COLOR_PAIR(3));
 	    mvwprintw(bingo[i][j],2,3,"%s","X ");		//to hide comp number
 	    wattron(bingo[i][j],A_BOLD|COLOR_PAIR(3));
 	}
-	else
+	else			// else just print it with hichlight
 	{
 	    wattron(bingo[i][j],A_BOLD|A_STANDOUT|COLOR_PAIR(3));
 	    mvwprintw(bingo[i][j],2,3,"%s","X ");		//to hide comp number
 	    wattron(bingo[i][j],A_BOLD|A_STANDOUT|COLOR_PAIR(3));
 	}
-	player_bingo+=bingos(player,i,j);
+/******************************************************************************************************************/
 
-	bingodisp(bingocnt,player_bingo);
 	update_panels();
 	doupdate();
     }
+/*************************** Checks whether some one won or not ***************************************************/
+
+/******************* It's a draw **********************************************************************************/
     if(player_bingo>4&&comp_bingo>4)
     {
 	wattron(playchance,COLOR_PAIR(3));
-	mvwprintw(playchance,1,1,"                       ");
+	mvwprintw(playchance,1,1,"  Press any key to exit  ");
 	mvwprintw(playchance,2,1,"      IT'S A DRAW!!     ");
 	wattroff(playchance,COLOR_PAIR(3));
     }
+/********************* Computer won *********************************************************************************************/
     else if(comp_bingo>4)
     {
 	wattron(playchance,COLOR_PAIR(3));
-	mvwprintw(playchance,1,1,"                        ");
+	mvwprintw(playchance,1,1,"  Press any key to exit  ");
 	mvwprintw(playchance,2,1,"	 COMPUTER WON!?!  ");
 	wattroff(playchance,COLOR_PAIR(3));
     }
+/****************** Player won ************************************************************************************/
     else
     {    
 	wattron(playchance,COLOR_PAIR(3));
-	mvwprintw(playchance,1,1,"                        ");
+	mvwprintw(playchance,1,1,"  Press any key to exit  ");
 	mvwprintw(playchance,2,1,"	 YOU WON!!  ");
 	wattroff(playchance,COLOR_PAIR(3));
     }
+/******************************************************************************************************************/
     update_panels();
     doupdate();
     sleep(2);
+    getch();
+/********************** Makes a clean exit ************************************************************************/
     for(i=0;i<5;++i)
 	for(j=0;j<5;++j)
 	{
@@ -281,4 +286,5 @@ void vs_comp(char **err)
     delwin(playchance);
     del_panel(bingcnt);
     delwin(bingocnt);
+/******************************************************************************************************************/
 }

@@ -155,7 +155,7 @@ void main()
 		}
 	}
 
-	Print_MainMenu(menu,title,pan,choice);
+	Print_MainMenu(menu,title,choice);
 
     }
 

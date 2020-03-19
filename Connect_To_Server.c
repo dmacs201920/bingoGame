@@ -1,8 +1,14 @@
 #include"Bingo_Header.h"
 extern int end_game_flag;
 
+/*
+		FUNCTION TO HELP CLIENT CONNECT TO THE SERVER
+		USED IN THE CLIENT SIDE OF THE PROGRAM
+*/   
+
 void connect_to_server(char **err)
 {
+    /********************************************************  INITIALIZATIONS  ***************************************************************/
     *err=NULL;
     end_game_flag=0;
     int adl = sizeof(struct sockaddr_in),port_no;
@@ -11,12 +17,18 @@ void connect_to_server(char **err)
     struct sockaddr_in ad;
     //int port;
     game_p par;
-
-
-
+   
     curs_set(1);
     cbreak();
-    WINDOW *ser_det = newwin(20,50,6,50);
+   
+    bzero(&ad,sizeof(ad));
+    ad.sin_family=AF_INET;
+    ad.sin_addr.s_addr=inet_addr(MY_ADDR);
+
+    /*****************************************************************************************************************************************/
+
+
+    WINDOW *ser_det = newwin(20,50,6,50);			//CREATING WINDOW
     if(ser_det==NULL)
     {
 	*err = "ser_det window error";
@@ -31,25 +43,20 @@ wattron(ser_det,COLOR_PAIR(1));
 wattroff(ser_det,COLOR_PAIR(1));
 
 
-    if((par.sersd = socket(AF_INET,SOCK_STREAM,0))==-1)		//otherwise check for errno
+    if((par.sersd = socket(AF_INET,SOCK_STREAM,0))==-1)		//INITIALISING THE SOCKET DESCRIPTOR FOR THE SERVER SIDE
     {
-
 	*err = "Socket create error";
 	delwin(ser_det);
 	clear();
 	refresh();
 	return;
-
     }
-    echo();
-    bzero(&ad,sizeof(ad));
-    ad.sin_family=AF_INET;
-    ad.sin_addr.s_addr=inet_addr(MY_ADDR);
 
+    echo();							//PRINTS THE USER KEYBOARD INPUT ON SCREEN
 
     while(1)
     {
-
+	/******************************************  GETTING USER INPUT FOR PORT NUMBER  *********************************************************/
 	mvwprintw(ser_det,2,2,"USE ONLY BACKSPACE AND DIGITS!");
 	mvwprintw(ser_det,4,2,"ENTER PORT NUMBER(PRESS -1 TO EXIT):");
 
@@ -67,10 +74,11 @@ wattroff(ser_det,COLOR_PAIR(1));
 	    refresh();
 	    return;
 	}
-	ad.sin_port=htons(port_no);   
+    /*****************************************************************************************************************************************/
+	ad.sin_port=htons(port_no);   				//SETTING THE PORT NUMBER
 
 
-	if((connect(par.sersd,ADCAST &ad,adl))!=0)
+	if((connect(par.sersd,ADCAST &ad,adl))!=0)		//TRYING TO CONNECT TO THE SERVER
 	{
 	    wattron(ser_det,COLOR_PAIR(4));
 	    mvwprintw(ser_det,15,2,"UNABLE TO CONNECT TO SERVER!!!");
@@ -82,16 +90,17 @@ wattroff(ser_det,COLOR_PAIR(1));
 	break;
     }		//while close
 
-    noecho();
+    noecho();								//DISABLES ECHO
 
-    delwin(ser_det);
+    delwin(ser_det);							//DELETING THE WINDOW
     clear();
     refresh();
 
-    curs_set(0);
+    curs_set(0);							//CURSER HIDING FROM SCREEN
+
     int startx = 7,starty = 60,row,col;
 
-
+/***********************************************  RECIEVING THE BINGO GAME PLAY ARRAY FROM THE SERVER  ******************************************/
     for(int i=0;i<5;++i)
     {
 	for(int j=0;j<5;++j)
@@ -107,10 +116,12 @@ wattroff(ser_det,COLOR_PAIR(1));
 
     }
 
+    /*****************************************************************************************************************************************/
+
     par.get.x = par.get.y = par.get.p =  par.get.q = 0;
-    pthread_mutex_init(&par.get.get_m,NULL);
+    pthread_mutex_init(&par.get.get_m,NULL);			//MUTEX VARIABLE INITIALIZATIONS
     pthread_mutex_init(&par.get.done_mutex,NULL);
-    pthread_cond_init(&par.get.done,NULL);
+    pthread_cond_init(&par.get.done,NULL);			//CONDITION VARIABLE INITIALIZATION
 
     //BINGO IS FOR DISPLAYING THE ARRAY NUMBERS
     //PLAYCHANCE FOR DISPLAYING WHO'S CHANCE IT IS
@@ -129,9 +140,6 @@ wattroff(ser_det,COLOR_PAIR(1));
     if(par.chancepan==NULL)				
     {
 	delwin(par.playchance);
-	//	pthread_mutex_destoy(&par.get.get_m);
-	//	pthread_mutex_destoy(&par.get.done_mutex);
-	//	pthread_cond_destoy(&par.get.done);
 	*err="Unable to create PANEL";				//ERROR MSG
 	return;
     }
@@ -157,7 +165,7 @@ wattroff(ser_det,COLOR_PAIR(1));
 	return;
     }
 
-    ////////////////////////////////////////////////////		CREATING BINGO WINDOWS AND PANELS    
+    ////////////////////////////////////////////////////   CREATING BINGO WINDOWS AND PANELS    //////////////////////////////////////////////////
 
     int i,j,t1,t2;
 
@@ -233,8 +241,9 @@ wattroff(ser_det,COLOR_PAIR(1));
     doupdate();				//REFRESHES ALL THE PANELS IN ORDER REQUIRED
 
 
+    /*****************************************************************************************************************************************/
 
-    if(pthread_create(&par.getid,NULL,get_key_t,&par.get)<0)
+    if(pthread_create(&par.getid,NULL,get_key_t,&par.get)<0)			//STARTING THE GET KEY THREAD FUNCTION
     {
 	close(par.sersd);
 
@@ -254,7 +263,7 @@ wattroff(ser_det,COLOR_PAIR(1));
 	return;
     }
 
-    if(pthread_create(&par.get.gameid,NULL,client_game_t,&par)<0)
+    if(pthread_create(&par.get.gameid,NULL,client_game_t,&par)<0)		//STARTING THE CLIENT GAME THREAD FUNCTION
     {
 	close(par.sersd);
 	pthread_cancel(par.getid);
@@ -276,11 +285,13 @@ wattroff(ser_det,COLOR_PAIR(1));
     }
 
 
-    while(end_game_flag==0)
+    while(end_game_flag==0)							//WAITS FOR THE END GAME FLAG TO CHANGE
 	sleep(0.2);
 
     if(end_game_flag>0)
-	pthread_join(par.get.gameid,(void**)err);
+	pthread_join(par.get.gameid,(void**)err);				//RECIEVING ERROR MESSAGE FROM CLIENT GAME THREAD FUNCTION
+
+    /***************************************************  CLOSING CONNECTIONS AND DELETING WINDOWS  **********************************************/
 
     		close(par.sersd);
 		for(i=0;i<5;i++)
@@ -295,6 +306,8 @@ wattroff(ser_det,COLOR_PAIR(1));
 		delwin(par.playchance);
 		del_panel(par.bingcnt);
 		delwin(par.bingocnt);
+
+    /*****************************************************************************************************************************************/
 
 		return;
 

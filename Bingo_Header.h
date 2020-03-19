@@ -143,7 +143,15 @@ typedef struct
     pthread_t tmr,cwait;
     int sec,flag;
 }cond_p;
-
+/*
+ * ******************************* Used as parameter for timedwait_cond *******************************
+ * c		-	Variable for signalling
+ * m		-	Variable for mutex locking to protect data when one function is using a structure
+ * tmr		-	Variable for the timer pthread function
+ * cwait	-	Variable for the cond_wait pthread function
+ * sec		-	Seconds to wait after which data cammot be given
+ * flag		-	For checking if data is entered or no
+*/
 
 int pthread_setconcurrency(int new_level);
 void sleep(int);

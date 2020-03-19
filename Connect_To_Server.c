@@ -251,9 +251,6 @@ wattroff(ser_det,COLOR_PAIR(1));
 
 
 	*err="Unable to create Get Key thread";
-	//	pthread_mutex_destoy(&par.get.get_m);
-	//	pthread_mutex_destoy(&par.get.done_mutex);
-	//	pthread_cond_destoy(&par.get.done);
 	return;
     }
 
@@ -275,22 +272,17 @@ wattroff(ser_det,COLOR_PAIR(1));
 
 
 	*err="Unable to create Game thread";
-	//	pthread_mutex_destoy(&par.get.get_m);
-	//	pthread_mutex_destoy(&par.get.done_mutex);
-	//	pthread_cond_destoy(&par.get.done);
 	return;
     }
 
-    while(1)
-    {
-	switch(end_game_flag)
-	{
-	    case 0:
-		sleep(0.2);
-		break;
 
-	    default:
-		close(par.sersd);
+    while(end_game_flag==0)
+	sleep(0.2);
+
+    if(end_game_flag>0)
+	pthread_join(par.get.gameid,(void**)err);
+
+    		close(par.sersd);
 		for(i=0;i<5;i++)
 		{
 		    for(j=0;j<5;j++)
@@ -307,7 +299,7 @@ wattroff(ser_det,COLOR_PAIR(1));
 		return;
 
 
-	}
+	
 
-    }
+    
 }

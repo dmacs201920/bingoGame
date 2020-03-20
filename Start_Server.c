@@ -32,22 +32,22 @@ void start_server(char **err)
     /********************* Initializes mutex and conition variables *************************/
     if(pthread_mutex_init(&par.get.get_m,NULL)!=0)
     {
-    	*err = "MUTEX INIT ERROR";
+	*err = "MUTEX INIT ERROR";
 	return;
     }
     if(pthread_mutex_init(&par.get.pl.lock,NULL)!=0)
     {
-    	*err = "MUTEX INIT ERROR";
+	*err = "MUTEX INIT ERROR";
 	return;
     }
     if(pthread_mutex_init(&par.get.done_mutex,NULL)!=0)
     {
-    	*err = "MUTEX INIT ERROR";
+	*err = "MUTEX INIT ERROR";
 	return;
     }
     if(pthread_cond_init(&par.get.done,NULL)!=0)
     {
-    	*err = " PTHREAD COND INIT ERROR";
+	*err = " PTHREAD COND INIT ERROR";
 	return;
     }
     /****************************************************************************************/
@@ -55,7 +55,7 @@ void start_server(char **err)
     p.adl=sizeof(p.ad);		// Sets address length.
     init(&par.get.pl.l,sizeof(player),cmp,NULL,cpy);	// Initializes cdll.
 
-   if((par.sersd=p.sd=socket(AF_INET,SOCK_STREAM,0))<0)	// Gets a stream socket.
+    if((par.sersd=p.sd=socket(AF_INET,SOCK_STREAM,0))<0)	// Gets a stream socket.
     {
 	*err="Unable to open stream socket";
 	return;
@@ -65,7 +65,7 @@ void start_server(char **err)
     p.ad.sin_family=AF_INET;	// Sets socket family
     p.ad.sin_addr.s_addr=inet_addr(MY_ADDR);	// Sets internet address
     p.plid=0;		// Sets player id.
-/*********************** Chooses a free port number by itrating port number from 6000 to 2000 *****/
+    /*********************** Chooses a free port number by itrating port number from 6000 to 2000 *****/
     while(port_no>2000)
     {
 	p.ad.sin_port=htons(port_no);
@@ -76,14 +76,14 @@ void start_server(char **err)
 	}
 	break;
     }
-/**************************************************************************************************/
+    /**************************************************************************************************/
     if(port_no<2000)	// Unable to find a free prot number
     {
 	close(p.sd);
 	*err="Unable to bind with the local address";
 	return;
     }
-/**************************************************************************************************/
+    /**************************************************************************************************/
 
     if(listen(p.sd,5)<0) // listens to the socket for connections
     {
@@ -91,7 +91,7 @@ void start_server(char **err)
 	return;
     }
 
-/**************************************************************************************************/
+    /**************************************************************************************************/
     insertl(&par.get.pl.l,&p,0); // puts server in the cdll of players
     conf_p conf;
     conf.status=0;		// Initializes status
@@ -122,14 +122,21 @@ void start_server(char **err)
     {
 	close(p.sd);
 	pthread_cancel(conf.acct);
+	node *tmp=par.get.pl.l.h;
+	do
+	{
+	    close(((player*)tmp->d)->sd);
+	    tmp=tmp->n;
+	}while(tmp!=par.get.pl.l.h);
+	freecdll(par.get.pl.l);
 	*err="Unable to create startquit pthread";
 	return;
     }
     while(conf.status==0)	// Waits for start or quit the game.
 	sleep(0.2);
-/**************************************************************************************************/
+    /**************************************************************************************************/
 
-/******************** Remove all that is used only in accept_t*************************************/
+    /******************** Remove all that is used only in accept_t*************************************/
     del_panel(conf.pan);
     delwin(conf.w);
     clear();	// Clears screen for printing bingo grid clean
@@ -143,21 +150,34 @@ void start_server(char **err)
 	pthread_cancel(((player*)temp->d)->tid);// Cancels confirm thread of each player. 
 	temp=temp->n;
     }while(temp!=conf.pl->l.h);
-/**************************************************************************************************/
+    /**************************************************************************************************/
     if(conf.status<1)
     {
 	if(conf.status==-1)
 	    pthread_join(conf.acct,(void**)err);	// Checks for error
-	close(p.sd);
+	node *tmp=par.get.pl.l.h;
+	do
+	{
+	    close(((player*)tmp->d)->sd);
+	    tmp=tmp->n;
+	}while(tmp!=par.get.pl.l.h);
+	freecdll(par.get.pl.l);
 	return;
     }
-/******************** Creates windows and panels for bingo screen**********************************/
+    /******************** Creates windows and panels for bingo screen**********************************/
     //print screen
     int startx = 7,starty = 60,row,col;
     par.playchance = newwin(3,120,3,starty);		//CREATES THE WINDOW AND RETURNS A POINTER TO THE PLAYCHANCE
     if(par.playchance==NULL)				
     {
 	*err="Unable to create WINDOW";				//ERROR MSG
+	node *tmp=par.get.pl.l.h;
+	do
+	{
+	    close(((player*)tmp->d)->sd);
+	    tmp=tmp->n;
+	}while(tmp!=par.get.pl.l.h);
+	freecdll(par.get.pl.l);
 	return;
     }
 
@@ -166,6 +186,13 @@ void start_server(char **err)
     {
 	delwin(par.playchance);
 	*err="Unable to create PANEL";				//ERROR MSG
+	node *tmp=par.get.pl.l.h;
+	do
+	{
+	    close(((player*)tmp->d)->sd);
+	    tmp=tmp->n;
+	}while(tmp!=par.get.pl.l.h);
+	freecdll(par.get.pl.l);
 	return;
     }
 
@@ -174,6 +201,13 @@ void start_server(char **err)
     {
 	delwin(par.playchance);
 	del_panel(par.chancepan);
+	node *tmp=par.get.pl.l.h;
+	do
+	{
+	    close(((player*)tmp->d)->sd);
+	    tmp=tmp->n;
+	}while(tmp!=par.get.pl.l.h);
+	freecdll(par.get.pl.l);
 	*err="Unable to create WINDOW";				//ERROR MSG
 	return;
     }
@@ -184,6 +218,13 @@ void start_server(char **err)
 	delwin(par.playchance);
 	del_panel(par.chancepan);
 	delwin(par.bingocnt);
+	node *tmp=par.get.pl.l.h;
+	do
+	{
+	    close(((player*)tmp->d)->sd);
+	    tmp=tmp->n;
+	}while(tmp!=par.get.pl.l.h);
+	freecdll(par.get.pl.l);
 	*err="Unable to create PANEL";				//ERROR MSG
 	return;
     }
@@ -212,6 +253,13 @@ void start_server(char **err)
 			delwin(par.get.bingo[t1][t2]);
 		    }
 		*err="Unable to create WINDOW";				//ERROR MSG
+		node *tmp=par.get.pl.l.h;
+		do
+		{
+		    close(((player*)tmp->d)->sd);
+		    tmp=tmp->n;
+		}while(tmp!=par.get.pl.l.h);
+		freecdll(par.get.pl.l);
 		return;
 	    }
 	    par.pan[i][j] = new_panel(par.get.bingo[i][j]);
@@ -229,6 +277,13 @@ void start_server(char **err)
 			del_panel(par.pan[t1][t2]);
 		    }
 		*err="Unable to create PANEL";				//ERROR MSG
+		node *tmp=par.get.pl.l.h;
+		do
+		{
+		    close(((player*)tmp->d)->sd);
+		    tmp=tmp->n;
+		}while(tmp!=par.get.pl.l.h);
+		freecdll(par.get.pl.l);
 		return;
 	    }
 
@@ -251,8 +306,8 @@ void start_server(char **err)
 
 
 
-/**************************************************************************************************/
-/**************************************************************************************************/
+    /**************************************************************************************************/
+    /**************************************************************************************************/
     wattron(par.get.bingo[0][0],A_STANDOUT);
     mvwprintw(par.get.bingo[0][0],2,3,"%d",par.get.array[0][0]);	// Highlighting a position in grid
     wattroff(par.get.bingo[0][0],A_STANDOUT);
@@ -260,10 +315,17 @@ void start_server(char **err)
     doupdate();				//REFRESHES ALL THE PANELS IN ORDER REQUIRED
 
 
-/*************************************** Createing server game and get_key threads**********************/
+    /*************************************** Createing server game and get_key threads**********************/
     if(pthread_create(&par.get.gameid,NULL,serv_game_t,&par)!=0)
     {
 	pthread_cancel(par.getid);
+	node *tmp=par.get.pl.l.h;
+	do
+	{
+	    close(((player*)tmp->d)->sd);
+	    tmp=tmp->n;
+	}while(tmp!=par.get.pl.l.h);
+	freecdll(par.get.pl.l);
 	del_panel(par.chancepan);
 	delwin(par.playchance);
 	del_panel(par.bingcnt);
@@ -274,7 +336,6 @@ void start_server(char **err)
 		del_panel(par.pan[t1][t2]);
 		delwin(par.get.bingo[t1][t2]);
 	    }
-	close(p.sd);
 	*err="Unable to create game pthread";
 	return;
     }
@@ -283,7 +344,13 @@ void start_server(char **err)
 
     if(pthread_create(&par.getid,NULL,get_key_t,&par.get)!=0)
     {
-	close(par.sersd);
+	node *tmp=par.get.pl.l.h;
+	do
+	{
+	    close(((player*)tmp->d)->sd);
+	    tmp=tmp->n;
+	}while(tmp!=par.get.pl.l.h);
+	freecdll(par.get.pl.l);
 	del_panel(par.chancepan);
 	delwin(par.playchance);
 	del_panel(par.bingcnt);
@@ -297,13 +364,13 @@ void start_server(char **err)
 	*err="Unable to create Get Key thread";
 	return;
     }
-/**************************************************************************************************/
+    /**************************************************************************************************/
 
     while(end_game_flag==0)		// Waits for game to end
 	sleep(0.1);
     if(end_game_flag>0)			// Cgets erro from the game.
 	pthread_join(par.get.gameid,(void**)err);
-/***************************** Destroys windows, panels, cdll and sozkets ***************************/
+    /***************************** Destroys windows, panels, cdll and sozkets ***************************/
     for(i=0;i<5;i++)
     {
 	for(j=0;j<5;j++)
@@ -323,6 +390,6 @@ void start_server(char **err)
 	tmp=tmp->n;
     }while(tmp!=par.get.pl.l.h);
     freecdll(par.get.pl.l);
-/****************************************************************************************************/
+    /****************************************************************************************************/
     return;
 }

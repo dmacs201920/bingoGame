@@ -2,9 +2,9 @@
 extern int end_game_flag;
 
 /*
-		FUNCTION TO HELP CLIENT CONNECT TO THE SERVER
-		USED IN THE CLIENT SIDE OF THE PROGRAM
-*/   
+   FUNCTION TO HELP CLIENT CONNECT TO THE SERVER
+   USED IN THE CLIENT SIDE OF THE PROGRAM
+ */   
 
 void connect_to_server(char **err)
 {
@@ -17,10 +17,10 @@ void connect_to_server(char **err)
     struct sockaddr_in ad;
     //int port;
     game_p par;
-   
+
     curs_set(1);
     cbreak();
-   
+
     bzero(&ad,sizeof(ad));
     ad.sin_family=AF_INET;
     ad.sin_addr.s_addr=inet_addr(MY_ADDR);
@@ -38,9 +38,9 @@ void connect_to_server(char **err)
 	return;
 
     }
-wattron(ser_det,COLOR_PAIR(1));
+    wattron(ser_det,COLOR_PAIR(1));
     box(ser_det,0,0);
-wattroff(ser_det,COLOR_PAIR(1));
+    wattroff(ser_det,COLOR_PAIR(1));
 
 
     if((par.sersd = socket(AF_INET,SOCK_STREAM,0))==-1)		//INITIALISING THE SOCKET DESCRIPTOR FOR THE SERVER SIDE
@@ -70,11 +70,12 @@ wattroff(ser_det,COLOR_PAIR(1));
 	    noecho();
 	    curs_set(0);
 	    delwin(ser_det);
+	    close(par.sersd);
 	    clear();
 	    refresh();
 	    return;
 	}
-    /*****************************************************************************************************************************************/
+	/*****************************************************************************************************************************************/
 	ad.sin_port=htons(port_no);   				//SETTING THE PORT NUMBER
 
 
@@ -100,7 +101,7 @@ wattroff(ser_det,COLOR_PAIR(1));
 
     int startx = 7,starty = 60,row,col;
 
-/***********************************************  RECIEVING THE BINGO GAME PLAY ARRAY FROM THE SERVER  ******************************************/
+    /***********************************************  RECIEVING THE BINGO GAME PLAY ARRAY FROM THE SERVER  ******************************************/
     for(int i=0;i<5;++i)
     {
 	for(int j=0;j<5;++j)
@@ -133,6 +134,7 @@ wattroff(ser_det,COLOR_PAIR(1));
     if(par.playchance==NULL)				
     {
 	*err="Unable to create WINDOW";				//ERROR MSG
+	close(par.sersd);
 	return;
     }
 
@@ -141,6 +143,7 @@ wattroff(ser_det,COLOR_PAIR(1));
     {
 	delwin(par.playchance);
 	*err="Unable to create PANEL";				//ERROR MSG
+	close(par.sersd);
 	return;
     }
 
@@ -151,6 +154,7 @@ wattroff(ser_det,COLOR_PAIR(1));
 	delwin(par.playchance);
 
 	*err="Unable to create WINDOW";				//ERROR MSG
+	close(par.sersd);
 	return;
     }
 
@@ -162,6 +166,7 @@ wattroff(ser_det,COLOR_PAIR(1));
 
 	delwin(par.bingocnt);
 	*err="Unable to create PANEL";				//ERROR MSG
+	close(par.sersd);
 	return;
     }
 
@@ -190,6 +195,7 @@ wattroff(ser_det,COLOR_PAIR(1));
 			delwin(par.get.bingo[t1][t2]);
 		    }
 		*err="Unable to create WINDOW";				//ERROR MSG
+		close(par.sersd);
 		return;
 	    }
 
@@ -212,6 +218,7 @@ wattroff(ser_det,COLOR_PAIR(1));
 		    }
 
 		*err="Unable to create PANEL";				//ERROR MSG
+		close(par.sersd);
 		return;
 	    }
 
@@ -293,26 +300,26 @@ wattroff(ser_det,COLOR_PAIR(1));
 
     /***************************************************  CLOSING CONNECTIONS AND DELETING WINDOWS  **********************************************/
 
-    		close(par.sersd);
-		for(i=0;i<5;i++)
-		{
-		    for(j=0;j<5;j++)
-		    {
-			del_panel(par.pan[i][j]);
-			delwin(par.get.bingo[i][j]);
-		    }
-		}
-		del_panel(par.chancepan);
-		delwin(par.playchance);
-		del_panel(par.bingcnt);
-		delwin(par.bingocnt);
+    close(par.sersd);
+    for(i=0;i<5;i++)
+    {
+	for(j=0;j<5;j++)
+	{
+	    del_panel(par.pan[i][j]);
+	    delwin(par.get.bingo[i][j]);
+	}
+    }
+    del_panel(par.chancepan);
+    delwin(par.playchance);
+    del_panel(par.bingcnt);
+    delwin(par.bingocnt);
 
     /*****************************************************************************************************************************************/
 
-		return;
+    return;
 
 
-	
 
-    
+
+
 }

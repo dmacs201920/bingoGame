@@ -135,7 +135,7 @@ void* client_game_t(void *arg)
 		if(d.bng>4)
 		{
 		    wattron(par->playchance,COLOR_PAIR(2)|A_BOLD|A_BLINK);
-		    mvwprintw(par->playchance,1,1,"       YOU WON!!!!!        ");
+		    mvwprintw(par->playchance,1,1,"       YOU WON!!!!!                ");
 		    mvwprintw(par->playchance,2,1,"PRESS ANY KEY TO CONTINUE...");
 		    wattroff(par->playchance,COLOR_PAIR(2)|A_BOLD|A_BLINK); 
 		}
@@ -144,7 +144,7 @@ void* client_game_t(void *arg)
 		{
 		    wattron(par->playchance,COLOR_PAIR(2)|A_BOLD|A_BLINK);
 		    mvwprintw(par->playchance,2,1,"PRESS ANY KEY TO CONTINUE...");
-		    mvwprintw(par->playchance,1,1,"       YOU LOST           ");
+		    mvwprintw(par->playchance,1,1,"       YOU LOST                    ");
 		    wattroff(par->playchance,COLOR_PAIR(2)|A_BOLD|A_BLINK); 
 		}
 		update_panels();

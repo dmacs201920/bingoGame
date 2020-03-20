@@ -20,6 +20,8 @@ void main()
     init_pair(4,COLOR_RED,COLOR_BLACK);
     init_pair(5,COLOR_CYAN,COLOR_CYAN);
     init_pair(6,COLOR_GREEN,COLOR_BLACK);
+    init_pair(7,COLOR_MAGENTA,COLOR_BLACK);
+
     WINDOW *menu,*title;
     PANEL *pan[2];
     if((menu = newwin(20,50,6,50))==NULL)
@@ -77,6 +79,8 @@ void main()
 		    case 0:
 			clear();
 			refresh();
+			hide_panel(pan[0]);
+			hide_panel(pan[1]);
 			vs_comp(&err);
 			wattron(menu,COLOR_PAIR(4));
 			if(err!=NULL)
@@ -88,14 +92,13 @@ void main()
 			    mvwprintw(menu,15,2,"                                         ");
 			}
 			wattroff(menu,COLOR_PAIR(4));
-
 			clear();
 			break;
 		    case 1:
 			clear();
 			refresh();
-			del_panel(pan[1]);
-			del_panel(pan[0]);
+			hide_panel(pan[0]);
+			hide_panel(pan[1]);
 			start_server(&err);
 			wattron(menu,COLOR_PAIR(4));
 			if(err!=NULL)
@@ -107,14 +110,13 @@ void main()
 			    mvwprintw(menu,15,2,"                                         ");
 			}
 			wattroff(menu,COLOR_PAIR(4));
-
-			pan[0] = new_panel(menu);
-			pan[1] = new_panel(title);
 			clear();
 			break;
 		    case 2:
 			clear();
 			refresh();
+			hide_panel(pan[0]);
+			hide_panel(pan[1]);
 			connect_to_server(&err);
 			wattron(menu,COLOR_PAIR(4));
 			if(err!=NULL)
@@ -153,6 +155,8 @@ void main()
 
 
 		}
+		show_panel(pan[0]);
+		show_panel(pan[1]);
 	}
 
 	Print_MainMenu(menu,title,choice);

@@ -65,7 +65,7 @@ void* serv_game_t(void* arg)
 		if(status!=-3)
 		{
 /************************* Remove the player from the list*********************************************************/
-		    tr = Current_player->n;
+		    tr = Current_player->p;
 		    close(((player*)Current_player->d)->sd);
 		    --(par->get.pl.n);
 		    Current_player->n->p = Current_player->p;

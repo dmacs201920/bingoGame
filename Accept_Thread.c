@@ -74,8 +74,6 @@ void* accept_t(void* arg)
 
     //////////////////////////////////////////// WHEN PLAYERS JOINED ABOVE FIVE THIS THREAD EXITS WITH STATUS 1 /////////////////////////////////////
 
-    del_panel(pl->pan);			//DELETING THE PANEL OF START SERVER SCREEN
-    delwin(pl->w);			//DELETING THE WINDOW OF START SERVER SCREEN
     pthread_cancel(pl->sqt);		// CANCELLING THE START_QUIT THREAD
     pl->status=1;
     pthread_exit(NULL);

@@ -92,6 +92,9 @@ void* serv_game_t(void* arg)
 	    else
 	    {
 		par->get.array[i][j] = 0;
+		par->get.x = i;
+		par->get.y = j;
+
 		if((((player*)par->get.pl.l.h->d)->bngcnt+=bingos(par->get.array,i,j))>4)
 		    flag=1;
 		do

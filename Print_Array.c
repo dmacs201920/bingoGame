@@ -23,9 +23,9 @@ void print_array(WINDOW *bingo[5][5],int array[5][5],int x,int y)
 		    mvwprintw(bingo[i][j],2,3,"%d",array[i][j]);
 		else		// else the number is 0 print 'x'
 		{
-		    wattron(bingo[i][j],COLOR_PAIR(3));
+		    wattron(bingo[i][j],COLOR_PAIR(6));
 		    mvwprintw(bingo[i][j],2,3,"X ");
-		    wattroff(bingo[i][j],COLOR_PAIR(3));
+		    wattroff(bingo[i][j],COLOR_PAIR(6));
 		}
 	    }
 	    /***************** if the position is not highlighted  ******************/
@@ -39,9 +39,9 @@ void print_array(WINDOW *bingo[5][5],int array[5][5],int x,int y)
 		}
 		else
 		{
-		    wattron(bingo[i][j],COLOR_PAIR(3)|A_STANDOUT);
+		    wattron(bingo[i][j],COLOR_PAIR(6)|A_STANDOUT);
 		    mvwprintw(bingo[i][j],2,3,"X ");
-		    wattroff(bingo[i][j],COLOR_PAIR(3)|A_STANDOUT);
+		    wattroff(bingo[i][j],COLOR_PAIR(6)|A_STANDOUT);
 		}
 
 	    }

@@ -62,22 +62,26 @@ void* client_game_t(void *arg)
 
 /////////////////////////////////////////////////// SCREEN PRINTING OF THE STRIKED NUMBER///////////////////////////////////////////////////////////
 
-		    if(posx==par->get.x&&posy==par->get.y)
+		    print_array(par->get.bingo,par->get.array,posx,posy);
+		    par->get.x = posx;
+		    par->get.y = posy;
+	/*	    if(posx==par->get.x&&posy==par->get.y)
 		    {
-			wattron(par->get.bingo[posx][posy],A_STANDOUT|COLOR_PAIR(3));
+			wattron(par->get.bingo[posx][posy],A_STANDOUT|COLOR_PAIR(6));
 			mvwprintw(par->get.bingo[posx][posy],2,3,"X ");
-			wattroff(par->get.bingo[posx][posy],A_STANDOUT|COLOR_PAIR(3));
+			wattroff(par->get.bingo[posx][posy],A_STANDOUT|COLOR_PAIR(6));
 		    }
 		    else
 		    {
-			wattron(par->get.bingo[posx][posy],COLOR_PAIR(3));
+			wattron(par->get.bingo[posx][posy],COLOR_PAIR(6));
 			mvwprintw(par->get.bingo[posx][posy],2,3,"X ");
-			wattroff(par->get.bingo[posx][posy],COLOR_PAIR(3));
+			wattroff(par->get.bingo[posx][posy],COLOR_PAIR(6));
 		    }
 		    update_panels();
-		    doupdate();
+		    doupdate();*/
 		}
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	    }//d.num!=0 if close
 
@@ -103,18 +107,22 @@ void* client_game_t(void *arg)
 
 
 /////////////////////////////////////////////////// SCREEN PRINTING OF THE STRIKED NUMBER///////////////////////////////////////////////////////////
-		    if(par->get.p==par->get.x&&par->get.q==par->get.y)
+
+		    
+		    print_array(par->get.bingo,par->get.array,par->get.p,par->get.q);
+/*		    if(par->get.p==par->get.x&&par->get.q==par->get.y)
 		    {
-			wattron(par->get.bingo[par->get.p][par->get.q],A_STANDOUT|COLOR_PAIR(3));
+			wattron(par->get.bingo[par->get.p][par->get.q],A_STANDOUT|COLOR_PAIR(6));
 			mvwprintw(par->get.bingo[par->get.p][par->get.q],2,3,"X ");
-			wattroff(par->get.bingo[par->get.p][par->get.q],A_STANDOUT|COLOR_PAIR(3));
+			wattroff(par->get.bingo[par->get.p][par->get.q],A_STANDOUT|COLOR_PAIR(6));
 		    }
 		    else
 		    {
-			wattron(par->get.bingo[par->get.p][par->get.q],COLOR_PAIR(3));
+			wattron(par->get.bingo[par->get.p][par->get.q],COLOR_PAIR(6));
 			mvwprintw(par->get.bingo[par->get.p][par->get.q],2,3,"X ");
-			wattroff(par->get.bingo[par->get.p][par->get.q],COLOR_PAIR(3));
+			wattroff(par->get.bingo[par->get.p][par->get.q],COLOR_PAIR(6));
 		    }
+   */
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		}//if close
 		else

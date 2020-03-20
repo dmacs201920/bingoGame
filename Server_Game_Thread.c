@@ -83,29 +83,33 @@ void* serv_game_t(void* arg)
 	if(d.num!=0)
 	{
 	    tr = Current_player;
-/*************************** Strike the number for all the players and update their bingo count*********************************************************************/
-	    do
+	    /*************************** Strike the number for all the players and update their bingo count*********************************************************************/
+	    search_strike(par->get.array,d.num,&i,&j);	// Strike for server
+	    if(i==-1)	// If the number is invalid set d.num to zero and break from loop
 	    {
-		    search_strike(par->get.array,d.num,&i,&j);	// Strike for server
-		    if(i==-1)	// If the number is invalid set d.num to zero and break from loop
-		    {
-			d.num=0;
-			break;
-		    }
-		    par->get.array[i][j] = 0;
-		if(tr != par->get.pl.l.h)
+		d.num=0;
+	    }
+	    else
+	    {
+		par->get.array[i][j] = 0;
+		if((((player*)par->get.pl.l.h->d)->bngcnt+=bingos(par->get.array,i,j))>4)
+		    flag=1;
+		do
 		{
-		    search_strike(((player*)tr->d)->array,d.num,&i,&j);
-		    ((player*)tr->d)->array[i][j] = 0;
-		    if((((player*)tr->d)->bngcnt+=bingos(((player*)tr->d)->array,i,j))>4)
-			flag=1;
-		}
-		tr = tr->n;
-	    }while(tr!=Current_player);
-/******************************************************************************************************************/
-/********* display bingo grid and count****************************************************************************/
+		    if(tr != par->get.pl.l.h)
+		    {
+			search_strike(((player*)tr->d)->array,d.num,&i,&j);
+			((player*)tr->d)->array[i][j] = 0;
+			if((((player*)tr->d)->bngcnt+=bingos(((player*)tr->d)->array,i,j))>4)
+			    flag=1;
+		    }
+		    tr = tr->n;
+		}while(tr!=Current_player);
+	    /******************************************************************************************************************/
+	    /********* display bingo grid and count****************************************************************************/
 	    bingodisp(par->bingocnt,((player*)par->get.pl.l.h->d)->bngcnt);
 	    print_array(par->get.bingo,par->get.array,par->get.x,par->get.y);
+	    }
 	}
 /****************** When game is not done ************************************************************************************************/
 	if(flag!=1)
@@ -150,7 +154,7 @@ void* serv_game_t(void* arg)
 	    {
 		wattron(par->playchance,COLOR_PAIR(2)|A_BOLD|A_BLINK);
 		mvwprintw(par->playchance,1,1,"                                     ");
-		mvwprintw(par->playchance,1,1,"YOU WON!!!!!");
+		mvwprintw(par->playchance,1,1,"YOU WON!!!!!                          ");
 		mvwprintw(par->playchance,2,1,"PRESS ANY KEY TO CONTINUE...");
 		wattroff(par->playchance,COLOR_PAIR(2)|A_BOLD|A_BLINK); 
 	    }
@@ -158,7 +162,7 @@ void* serv_game_t(void* arg)
 	    {
 		wattron(par->playchance,COLOR_PAIR(2)|A_BOLD|A_BLINK);
 		mvwprintw(par->playchance,1,1,"                                     ");
-		mvwprintw(par->playchance,1,1,"YOU LOST");
+		mvwprintw(par->playchance,1,1,"YOU LOST                             ");
 		mvwprintw(par->playchance,2,1,"PRESS ANY KEY TO CONTINUE...");
 		wattroff(par->playchance,COLOR_PAIR(2)|A_BOLD|A_BLINK); 
 	    }

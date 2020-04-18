@@ -156,6 +156,7 @@ void start_server(char **err)
 	if(conf.status==-1)
 	    pthread_join(conf.acct,(void**)err);	// Checks for error
 	node *tmp=par.get.pl.l.h;
+	    if(tmp!=NULL)
 	do
 	{
 	    close(((player*)tmp->d)->sd);

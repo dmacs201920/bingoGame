@@ -15,13 +15,19 @@
 #include<string.h>
 
 
-#define right 7
+
 #define width 5 
 #define length 8
-#define sx 10
-#define sy 60
+#define right 7
+#define down 4
 #define ADCAST (struct sockaddr*)
 #define MY_ADDR "127.0.0.1"
+#define startx 7
+#define starty 60
+#define nline 3
+#define ncols 120
+#define bngcnt_ln 60
+#define bngcnt_col 3
 
 typedef struct
 {
@@ -192,3 +198,4 @@ void* client_game(void* arg);
 void server_started_screen(WINDOW *w,struct sockaddr_in addr,int n);
 void how_to_play();
 void about();
+char* mkbingo(game_p *par);

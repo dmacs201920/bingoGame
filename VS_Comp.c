@@ -8,7 +8,7 @@ void vs_comp(char **err)
 
     int ch,flag;
 
-    int startx = 7,starty = 60,row,col;
+    int row,col;
 /************************************ Creates window and panels for bingo game grid *******************************/
     WINDOW *bingo[5][5],*playchance,*bingocnt;		//BINGO IS FOR DISPLAYING THE ARRAY NUMBERS
     //PLAYCHANCE FOR DISPLAYING WHO'S CHANCE IT IS
@@ -17,7 +17,7 @@ void vs_comp(char **err)
 
 
 
-    playchance = newwin(3,120,3,starty);		//CREATES THE WINDOW AND RETURNS A POINTER TO THE PLAYCHANCE
+    playchance = newwin(nline,ncols,startx-nline-1,starty);		//CREATES THE WINDOW AND RETURNS A POINTER TO THE PLAYCHANCE
     if(playchance==NULL)				
     {
 	*err="Unable to create WINDOW";				//ERROR MSG
@@ -62,7 +62,7 @@ void vs_comp(char **err)
 	{
 
 
-	    bingo[i][j] = newwin(width,length,startx,starty);
+	    bingo[i][j] = newwin(width,length,startx+down*i,starty+right*j);
 	    if(bingo[i][j]==NULL)
 	    {
 		del_panel(chancepan);
@@ -112,11 +112,7 @@ void vs_comp(char **err)
 
 	    mvwprintw(bingo[i][j],2,3,"%d",player[i][j]);		//MOVES TO THE REQ POSITION AND PRINTS IN THE WINDOW
 
-	    starty+=right;
-
 	}
-	startx+=width-1;
-	starty = sy; 
     }
 
 /******************************************************************************************************************/

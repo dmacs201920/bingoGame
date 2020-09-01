@@ -6,7 +6,7 @@
  * The node pointer Current_player determines who is the current player.
  * Head of the list is the server.
  */
-int end_game_flag;
+extern int end_game_flag;
 void* serv_game_t(void* arg)
 {
     game_p *par=arg;

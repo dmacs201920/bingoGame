@@ -16,8 +16,9 @@
 void* recv_t(void* arg)
 {
     recv_p *p=arg;
-    p->status=recv(p->sd,p->data,p->size,p->flags);
-    pthread_exit(NULL);
+    int x=recv(p->sd,p->data,p->size,p->flags);
+    pthread_cancel(p->tmrt);
+    p->status=x;
 }
 
 /****************************************************************/
@@ -27,9 +28,10 @@ void* timer_2(void* arg)
     recv_p *par=arg;
     sleep(par->sec);
     if(par->status==-2)
-	pthread_cancel(par->recvt);
-    par->status=-3;
-    pthread_exit(NULL);
+	{
+        pthread_cancel(par->recvt);
+        par->status=-3;
+    }
 }
 
 /****************************************************************/
@@ -58,9 +60,8 @@ int timed_recv(int sd,void* data,int size,int flags,int sec)
 	pthread_cancel(par.recvt);
 	return -1;
     }
-    while(par.status==-2);		// Waits for one of those threads to complete their work.
-    if(par.status>=0)
-        pthread_cancel(par.tmrt);
+    while(par.status==-2)sleep(0.2);		// Waits for one of those threads to complete their work.
+    
     return par.status;		// returns the status.
 }
 /****************************************************************/

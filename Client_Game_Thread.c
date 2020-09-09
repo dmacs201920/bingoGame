@@ -33,10 +33,9 @@ void* client_game_t(void *arg)
 
     while(1)
     {
-	if(read(par->sersd,&d,sizeof(data))!=sizeof(data))	// SOCKET RECIEVE FUNCTION ERROR CHECK
+	if(recv(par->sersd,&d,sizeof(data),0)!=sizeof(data))	// SOCKET RECIEVE FUNCTION ERROR CHECK
 	{
 	    pthread_cancel(par->getid);
-	    
 	    end_game_flag = 3;
 	    pthread_exit("SERVER HAS EXITED");					//CLOSE THE REQUIRED AND EXIT FROM THE FUNCTION
 	}

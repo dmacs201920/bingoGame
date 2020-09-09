@@ -5,7 +5,7 @@
 		IF THE TIME COMPLETES BEFORE THE USER ENTERS DATA, USER LOSES HIS CHANCE
 
 */   
-
+/*
 void* cond_wait(void* arg)
 {
     cond_p *par=arg;
@@ -14,7 +14,7 @@ void* cond_wait(void* arg)
     pthread_cancel(par->tmr);
     pthread_exit(NULL);
 }
-/***************************************************** RUNS THE TIMER ************************************************************************/
+//***************************************************** RUNS THE TIMER ************************************************************************
 void* timer(void* arg)
 {
     cond_p *par=arg;
@@ -24,13 +24,13 @@ void* timer(void* arg)
     par->flag=2;
     pthread_exit(NULL);
 }
-/*********************************************************************************************************************************************/
+//*********************************************************************************************************************************************
 
 
 int timedwait_cond(pthread_cond_t *c,pthread_mutex_t *m,int sec)
 {
 
-    /**********************************************  INITIALIZATIONS  ***********************************************************************/
+    //**********************************************  INITIALIZATIONS  ***********************************************************************
 
     cond_p par;
     par.c=c;
@@ -38,7 +38,7 @@ int timedwait_cond(pthread_cond_t *c,pthread_mutex_t *m,int sec)
     par.sec=sec;
     par.flag=0;
 
-    /***********************************************************************************************************************/
+    //***********************************************************************************************************************
 
     if(pthread_create(&par.cwait,NULL,cond_wait,&par)!=0) 		//CREATING THE RECIEVE FUNCTION 
     {
@@ -54,3 +54,12 @@ int timedwait_cond(pthread_cond_t *c,pthread_mutex_t *m,int sec)
     return par.flag-1;						// IF FLAG = 2 TIME EXCEEDED WITHOUT INPUT
     								// IF FLAG = 1 INPUT TAKEN WITHIN TIME
 }
+*/
+int timedwait_cond(pthread_cond_t *c,pthread_mutex_t *m,int sec)
+{
+    struct timespec w;
+    w.tv_sec=sec;
+    w.tv_nsec=0;
+    return pthread_cond_timedwait(c,m,&w);
+}
+

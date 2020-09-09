@@ -13,6 +13,7 @@
 #include<netinet/in.h>
 #include"cdll.h"
 #include<string.h>
+#include<unistd.h>
 
 
 
@@ -160,11 +161,9 @@ typedef struct
 */
 
 int pthread_setconcurrency(int new_level);
-void sleep(int);
-void close(int);
+
 uint32_t inet_addr(char*);
-int read(int,void*,int);
-int write(int,void*,int);
+
 
 void print_array(WINDOW *bingo[5][5],int array[5][5],int x,int y);
 void* timer(void*);

@@ -192,9 +192,9 @@ if((*err=mkbingo(&par))!=NULL)
 
 
     /*************************************** Createing server game and get_key threads**********************/
-if(pthread_create(&par.get.gameid,NULL,serv_game_t,&par)==0)
+if(pthread_create(&par.get.gameid,NULL,serv_game_t,&par)!=0)
 	*err="Unable to create game pthread";
-else if(pthread_create(&par.getid,NULL,get_key_t,&par.get)==0)
+else if(pthread_create(&par.getid,NULL,get_key_t,&par.get)!=0)
 	*err="Unable to create Get Key thread";
 else
 {

@@ -136,9 +136,9 @@ void connect_to_server(char **err)
 
     /*****************************************************************************************************************************************/
 
-    if(pthread_create(&par.getid,NULL,get_key_t,&par.get)==0)			//STARTING THE GET KEY THREAD FUNCTION
+    if(pthread_create(&par.getid,NULL,get_key_t,&par.get)!=0)			//STARTING THE GET KEY THREAD FUNCTION
     	*err="Unable to create Get Key thread";
-    else if(pthread_create(&par.get.gameid,NULL,client_game_t,&par)==0)		//STARTING THE CLIENT GAME THREAD FUNCTION
+    else if(pthread_create(&par.get.gameid,NULL,client_game_t,&par)!=0)		//STARTING THE CLIENT GAME THREAD FUNCTION
     	*err="Unable to create Game thread";
     else
     {

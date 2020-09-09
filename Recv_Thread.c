@@ -13,15 +13,17 @@
  */
 
 /****************************************************************/
+/*
 void* recv_t(void* arg)
 {
     recv_p *p=arg;
+
     int x=recv(p->sd,p->data,p->size,p->flags);
     pthread_cancel(p->tmrt);
     p->status=x;
 }
 
-/****************************************************************/
+//****************************************************************
 
 void* timer_2(void* arg)
 {
@@ -34,14 +36,14 @@ void* timer_2(void* arg)
     }
 }
 
-/****************************************************************/
-/* sd, data, size, flags 	-	Same as recv function.
- * sec				-	Number os seconds to wait.
- */
-/****************************************************************/
+//****************************************************************
+ //* sd, data, size, flags 	-	Same as recv function.
+ //* sec				-	Number os seconds to wait.
+ //*
+//****************************************************************
 int timed_recv(int sd,void* data,int size,int flags,int sec)
 {
-/*************Initialization of par variable*********************/
+//************Initialization of par variable********************
     recv_p par;
     par.sd=sd;
     par.status=-2;	// -2 means nothing has happened
@@ -49,19 +51,28 @@ int timed_recv(int sd,void* data,int size,int flags,int sec)
     par.flags=flags;
     par.sec=sec;
     par.data=data;
-/****************************************************************/
+//****************************************************************
+    if(pthread_create(&par.tmrt,NULL,timer_2,&par)!=0)  // creates timer_2 thread.
+    {
+       return -1;
+    }
     if(pthread_create(&par.recvt,NULL,recv_t,&par)!=0)	// creates recv_t thread
     {
-	return -1;
+            pthread_cancel(par.tmrt);
+	       return -1;
     }
 
-    if(pthread_create(&par.tmrt,NULL,timer_2,&par)!=0)	// creates timer_2 thread.
-    {
-	pthread_cancel(par.recvt);
-	return -1;
-    }
+
     while(par.status==-2)sleep(0.2);		// Waits for one of those threads to complete their work.
     
     return par.status;		// returns the status.
-}
+}*/
 /****************************************************************/
+int timed_recv(int sd,void* data,int size,int flags,int sec)
+{
+    struct timeval timeout;
+    timeout.tv_sec = sec;
+    timeout.tv_usec = 0;
+    setsockopt(sd ,SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout));
+    return recv(sd,data, size, flags);
+}

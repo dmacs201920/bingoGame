@@ -68,11 +68,12 @@ int timed_recv(int sd,void* data,int size,int flags,int sec)
     return par.status;		// returns the status.
 }*/
 /****************************************************************/
-struct timeval time_out;
+
 int timed_recv(int sd,void* data,int size,int flags,int sec)
 {    
-    time_out.tv_sec = sec;
-    time_out.tv_usec = 0;
-    setsockopt(sd ,SOL_SOCKET, SO_RCVTIMEO, &time_out, sizeof(time_out));
+    struct timeval t1;
+    t1.tv_sec=0;
+    t1.tv_usec=10000;
+    setsockopt(sd ,SOL_SOCKET, SO_RCVTIMEO, &t1, sizeof(t1));
     return recv(sd,data, size, flags);
 }

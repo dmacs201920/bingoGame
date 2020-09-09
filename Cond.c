@@ -57,9 +57,13 @@ int timedwait_cond(pthread_cond_t *c,pthread_mutex_t *m,int sec)
 */
 int timedwait_cond(pthread_cond_t *c,pthread_mutex_t *m,int sec)
 {
-    struct timespec w;
-    w.tv_sec=sec;
-    w.tv_nsec=0;
-    return pthread_cond_timedwait(c,m,&w);
+    struct timespec t1;
+    struct timeval t2;
+    int stat;
+    if((stat=gettimeofday(&t2,NULL))!=0)
+        return errno;
+    t1.tv_sec=t2.tv_sec+sec;
+    t1.tv_nsec=t2.tv_usec*1000;
+    return pthread_cond_timedwait(c,m,&t1);
 }
 
